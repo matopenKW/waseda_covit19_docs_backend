@@ -1,8 +1,8 @@
-name: Go
+name: Deploy
 
 on:
   push:
-    branches: [ deploy ]
+    branches: [ main ]
 #  pull_request:
 #    branches: [ main ]
 
