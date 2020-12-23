@@ -13,3 +13,7 @@ jobs:
     - name: Deploy to Heroku
       run: |
         echo Hello
+    - uses: actions/checkout@v1
+    - run: git status
+    - run: git branch -a
+    
