@@ -1,0 +1,14 @@
+name: Go
+
+on:
+  push:
+    branches: [ deploy ]
+#  pull_request:
+#    branches: [ main ]
+
+jobs:
+  deploy:
+    steps:
+    - name: Deploy to Heroku
+      run: |
+        echo Hello
