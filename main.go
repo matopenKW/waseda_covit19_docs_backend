@@ -1,16 +1,22 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	engine := gin.Default()
-	engine.GET("/", func(c *gin.Context) {
+	r := gin.Default()
+	r.GET("/", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "hello world",
 		})
 	})
-	engine.Run()
+	r.GET("/bye", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "bye",
+		})
+	})
+	r.Run()
 }
