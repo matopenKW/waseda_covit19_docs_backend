@@ -12,5 +12,5 @@ func main() {
 			"message": "hello world",
 		})
 	})
-	engine.Run(":80")
+	engine.Run()
 }
