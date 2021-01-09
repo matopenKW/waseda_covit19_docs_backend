@@ -1,4 +1,4 @@
-module matopenKW/waseda_covit19_docs_backend
+module github.com/matopenKW/waseda_covit19_docs_backend
 
 go 1.13
 
@@ -17,6 +17,7 @@ require (
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
 	golang.org/x/sys v0.0.0-20201221093633-bc327ba9c2f0 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
+	gopkg.in/gin-gonic/gin.v1 v1.3.0
 	gopkg.in/ini.v1 v1.62.0
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gorm.io/driver/postgres v1.0.6
