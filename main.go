@@ -1,12 +1,12 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
@@ -28,15 +28,17 @@ func main() {
 	r := gin.Default()
 
 	r.GET("/api/v1/hello_world", appHandler(impl.HelloWorld))
+	r.GET("/api/v1/post", appHandler(impl.GetPosts))
 	r.GET("/bye", appHandler(impl.HelloWorld))
 
 	r.Run()
 }
 
-func appHandler(i func(*sql.DB, *gin.Context)) func(*gin.Context) {
+func appHandler(i func(*gorm.DB, *gin.Context)) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// dbConnection
 		db, err := dbConnection()
+		defer db.Close()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": "db connections error",
@@ -47,6 +49,6 @@ func appHandler(i func(*sql.DB, *gin.Context)) func(*gin.Context) {
 	}
 }
 
-func dbConnection() (*sql.DB, error) {
-	return sql.Open("postgres", os.Getenv("DATABASE_URL"))
+func dbConnection() (*gorm.DB, error) {
+	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 }
