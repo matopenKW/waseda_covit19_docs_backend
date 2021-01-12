@@ -7,16 +7,13 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type Post struct {
-	ID      int
-	Content string
-	Author  string
-}
-
-func GetPosts(db *gorm.DB, c *gin.Context) {
-	var ps []*Post
-	err := db.Find(&ps).Error
-	if err != nil {
+func UpdatePost(db *gorm.DB, c *gin.Context) {
+	result := db.Save(&Post{
+		ID:      1,
+		Content: "content1-1",
+		Author:  "author1-1",
+	})
+	if result.Error != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": "dbError",
 		})
@@ -24,6 +21,6 @@ func GetPosts(db *gorm.DB, c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"posts": ps,
+		"post": result.Value,
 	})
 }
