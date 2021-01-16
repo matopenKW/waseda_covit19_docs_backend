@@ -29,6 +29,7 @@
 
 ### editors ###
 .vscode
+.idea
 
 ### database key ###
 database.env
