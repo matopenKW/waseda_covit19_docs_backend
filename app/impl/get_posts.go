@@ -4,18 +4,12 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-type Post struct {
-	ID      int
-	Content string
-	Author  string
-}
-
-func GetPosts(db *gorm.DB, c *gin.Context) {
-	var ps []*Post
-	err := db.Find(&ps).Error
+func GetPosts(con repository.Connection, c *gin.Context) {
+	ps, err := con.GetPosts()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"error": "dbError",

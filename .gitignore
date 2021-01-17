@@ -29,6 +29,7 @@
 
 ### editors ###
 .vscode
+__debug_bin
 .idea
 
 ### database key ###
