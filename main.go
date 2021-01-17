@@ -10,6 +10,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
 type HelloImpl interface {
@@ -36,7 +37,7 @@ func main() {
 	r.Run()
 }
 
-func appHandler(i func(*gorm.DB, *gin.Context)) func(*gin.Context) {
+func appHandler(i func(repository.Connection, *gin.Context)) func(*gin.Context) {
 	return func(c *gin.Context) {
 		// dbConnection
 		db, err := dbConnection()
@@ -47,7 +48,17 @@ func appHandler(i func(*gorm.DB, *gin.Context)) func(*gin.Context) {
 			})
 			return
 		}
-		i(db, c)
+
+		repo := repository.NewDbRepository(db)
+		con, err := repo.NewConnection()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": "db connections error",
+			})
+			return
+		}
+
+		i(con, c)
 	}
 }
 
