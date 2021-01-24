@@ -1,23 +1,18 @@
 package impl
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-func GetPosts(con repository.Connection, c *gin.Context) {
+func GetPosts(con repository.Connection, c *gin.Context) (ResponceImpl, error) {
 	ps, err := con.GetPosts()
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": "dbError",
-		})
-		return
+		return nil, err
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"posts": ps,
-	})
+	return &GetPostsResponce{
+		Posts: ps,
+	}, nil
 }

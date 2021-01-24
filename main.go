@@ -13,10 +13,6 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-type HelloImpl interface {
-	HelloWorld(c *gin.Context)
-}
-
 func init() {
 	_, err := dbConnection()
 	if err != nil {
@@ -37,31 +33,39 @@ func main() {
 	r.Run()
 }
 
-func appHandler(i func(repository.Connection, *gin.Context)) func(*gin.Context) {
-	return func(c *gin.Context) {
+func appHandler(i func(repository.Connection, *gin.Context) (impl.ResponceImpl, error)) func(*gin.Context) {
+	return func(ctx *gin.Context) {
 		// dbConnection
 		db, err := dbConnection()
 		defer db.Close()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "db connections error",
-			})
+			errorHandring("db connections error", ctx)
 			return
 		}
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "db connections error",
-			})
+			errorHandring("db connections error", ctx)
 			return
 		}
 
-		i(con, c)
+		res, err := i(con, ctx)
+		if err != nil {
+			errorHandring("server error", ctx)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, res)
 	}
 }
 
 func dbConnection() (*gorm.DB, error) {
 	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+}
+
+func errorHandring(message string, ctx *gin.Context) {
+	ctx.JSON(http.StatusInternalServerError, gin.H{
+		"error": message,
+	})
 }
