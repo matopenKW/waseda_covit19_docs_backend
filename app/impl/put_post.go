@@ -1,13 +1,35 @@
 package impl
 
 import (
-	"github.com/gin-gonic/gin"
+	"net/url"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-func PutPost(con repository.Connection, ctx *gin.Context) (ResponceImpl, error) {
+type PutPostRequest struct {
+}
+
+func (r *PutPostRequest) SetRequest(form url.Values) {
+
+}
+
+func (r *PutPostRequest) Validate() error {
+	return nil
+}
+
+func (r *PutPostRequest) Execute(con repository.Connection) (ResponceImpl, error) {
+	return putPost(r, con)
+}
+
+type PutPostResponce struct {
+	Post *model.Post
+}
+
+func (r *PutPostResponce) GetResponce() {
+}
+
+func putPost(req *PutPostRequest, con repository.Connection) (ResponceImpl, error) {
 	p := &model.Post{
 		ID:      2,
 		Content: "content2",

@@ -24,11 +24,10 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.GET("/api/v1/hello_world", appHandler(impl.HelloWorldRequest{}))
-	// r.GET("/api/v1/post", appHandler(impl.GetPosts))
-	// r.GET("/api/v1/post_put", appHandler(impl.PutPost))
-	// r.GET("/api/v1/post_update", appHandler(impl.UpdatePost))
-	// r.GET("/bye", appHandler(impl.HelloWorld))
+	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
+	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
+	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
+	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
 
 	r.Run()
 }

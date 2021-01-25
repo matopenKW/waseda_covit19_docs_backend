@@ -11,3 +11,7 @@ type RequestImpl interface {
 	Validate() error
 	Execute(repository.Connection) (ResponceImpl, error)
 }
+
+type ResponceImpl interface {
+	GetResponce()
+}
