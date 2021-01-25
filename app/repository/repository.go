@@ -15,4 +15,5 @@ type Connection interface {
 }
 
 type Transaction interface {
+	CreateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
 }

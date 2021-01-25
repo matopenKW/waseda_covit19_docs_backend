@@ -76,3 +76,13 @@ func (c *dbConnection) SavePost(p *model.Post) (*model.Post, error) {
 
 	return p, nil
 }
+
+func (tx *dbTransaction) CreateActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
+	err := tx.db.Save(ap).Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ap, nil
+}
