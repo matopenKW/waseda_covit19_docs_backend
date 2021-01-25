@@ -2,7 +2,7 @@ drop table IF EXISTS activity_program;
 
 create table activity_programs (
   id                 serial primary key,
-  datetime           timestamp primary key,
+  datetime,
   start_time         timestamp,
   end_time           timestamp,
   practice_section   varchar(255),
