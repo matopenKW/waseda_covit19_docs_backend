@@ -15,5 +15,19 @@ create table activity_program (
   contact_abstract_2 varchar(255),
 );
 
-
-
+INSERT INTO activity_program
+VALUES
+    (
+        1,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP,
+        'practice_section',
+        'practice_Contents',
+        1,
+        1,
+        'contact_person_1',
+        'contact_abstract_1',
+        'contact_person_2',
+        'contact_abstract_2'
+    );
