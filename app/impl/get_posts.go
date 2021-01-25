@@ -1,23 +1,41 @@
 package impl
 
 import (
-	"net/http"
+	"net/url"
 
-	"github.com/gin-gonic/gin"
-
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-func GetPosts(con repository.Connection, c *gin.Context) {
+type GetPostsRequest struct {
+}
+
+func (r *GetPostsRequest) SetRequest(form url.Values) {
+
+}
+
+func (r *GetPostsRequest) Validate() error {
+	return nil
+}
+
+func (r *GetPostsRequest) Execute(con repository.Connection) (ResponceImpl, error) {
+	return GetPosts(r, con)
+}
+
+type GetPostsResponce struct {
+	Posts []*model.Post
+}
+
+func (r *GetPostsResponce) GetResponce() {
+}
+
+func GetPosts(req *GetPostsRequest, con repository.Connection) (ResponceImpl, error) {
 	ps, err := con.GetPosts()
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": "dbError",
-		})
-		return
+		return nil, err
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"posts": ps,
-	})
+	return &GetPostsResponce{
+		Posts: ps,
+	}, nil
 }

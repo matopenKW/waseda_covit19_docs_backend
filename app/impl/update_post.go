@@ -1,15 +1,35 @@
 package impl
 
 import (
-	"net/http"
-
-	"github.com/gin-gonic/gin"
+	"net/url"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-func UpdatePost(con repository.Connection, ctx *gin.Context) {
+type UpdatePostRequest struct {
+}
+
+func (r *UpdatePostRequest) SetRequest(form url.Values) {
+
+}
+
+func (r *UpdatePostRequest) Validate() error {
+	return nil
+}
+
+func (r *UpdatePostRequest) Execute(con repository.Connection) (ResponceImpl, error) {
+	return UpdatePost(r, con)
+}
+
+type UpdatePostResponce struct {
+	Post *model.Post
+}
+
+func (r *UpdatePostResponce) GetResponce() {
+}
+
+func UpdatePost(req *UpdatePostRequest, con repository.Connection) (ResponceImpl, error) {
 
 	result, err := con.SavePost(&model.Post{
 		ID:      1,
@@ -17,13 +37,9 @@ func UpdatePost(con repository.Connection, ctx *gin.Context) {
 		Author:  "author1-1",
 	})
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"error": "dbError",
-		})
-		return
+		return nil, err
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"post": result,
-	})
+	return &UpdatePostResponce{
+		Post: result,
+	}, nil
 }
