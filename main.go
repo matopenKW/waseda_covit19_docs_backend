@@ -24,16 +24,15 @@ func init() {
 func main() {
 	r := gin.Default()
 
-	r.GET("/api/v1/hello_world", appHandler(impl.HelloWorld))
-	r.GET("/api/v1/post", appHandler(impl.GetPosts))
-	r.GET("/api/v1/post_put", appHandler(impl.PutPost))
-	r.GET("/api/v1/post_update", appHandler(impl.UpdatePost))
-	r.GET("/bye", appHandler(impl.HelloWorld))
+	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
+	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
+	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
+	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
 
 	r.Run()
 }
 
-func appHandler(i func(repository.Connection, *gin.Context) (impl.ResponceImpl, error)) func(*gin.Context) {
+func appHandler(i impl.RequestImpl) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		// dbConnection
 		db, err := dbConnection()
@@ -50,7 +49,12 @@ func appHandler(i func(repository.Connection, *gin.Context) (impl.ResponceImpl, 
 			return
 		}
 
-		res, err := i(con, ctx)
+		req := ctx.Request
+		req.ParseForm()
+		i.SetRequest(req.Form)
+		i.Validate()
+
+		res, err := i.Execute(con)
 		if err != nil {
 			errorHandring("server error", ctx)
 			return
