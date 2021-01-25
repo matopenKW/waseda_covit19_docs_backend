@@ -1,7 +1,7 @@
 package model
 
 type ActivityProgram struct {
-	ID               int
+	ID               int `gorm:"primaryKey"`
 	Datetime         string
 	StartTime        string
 	EndTime          string
