@@ -1,7 +1,7 @@
 drop table IF EXISTS activity_program;
 
 create table activity_programs (
-  id                 serial primary key,
+  id                 serial,
   user_id            varchar(255),
   datetime           timestamp,
   start_time         timestamp,
