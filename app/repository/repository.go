@@ -12,6 +12,7 @@ type Connection interface {
 	GetPosts() ([]*model.Post, error)
 	CreatePost(*model.Post) (*model.Post, error)
 	SavePost(*model.Post) (*model.Post, error)
+	FindRoutesByUserID(string) ([]*model.Route, error)
 }
 
 type Transaction interface {
