@@ -2,8 +2,6 @@ package impl
 
 import (
 	"net/url"
-
-	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
 type HelloWorldRequest struct {
@@ -17,8 +15,8 @@ func (r *HelloWorldRequest) Validate() error {
 	return nil
 }
 
-func (r *HelloWorldRequest) Execute(con repository.Connection) (ResponceImpl, error) {
-	return helloWorld(r, con)
+func (r *HelloWorldRequest) Execute(ctx *Context) (ResponceImpl, error) {
+	return helloWorld(r, ctx)
 }
 
 type HelloWorldResponce struct {
@@ -28,7 +26,7 @@ type HelloWorldResponce struct {
 func (r *HelloWorldResponce) GetResponce() {
 }
 
-func helloWorld(req *HelloWorldRequest, con repository.Connection) (ResponceImpl, error) {
+func helloWorld(req *HelloWorldRequest, ctx *Context) (ResponceImpl, error) {
 	return &HelloWorldResponce{
 		Message: "hello world",
 	}, nil

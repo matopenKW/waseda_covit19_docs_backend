@@ -4,7 +4,6 @@ import (
 	"net/url"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
-	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
 type GetPostsRequest struct {
@@ -18,8 +17,8 @@ func (r *GetPostsRequest) Validate() error {
 	return nil
 }
 
-func (r *GetPostsRequest) Execute(con repository.Connection) (ResponceImpl, error) {
-	return GetPosts(r, con)
+func (r *GetPostsRequest) Execute(ctx *Context) (ResponceImpl, error) {
+	return getPosts(r, ctx)
 }
 
 type GetPostsResponce struct {
@@ -29,7 +28,8 @@ type GetPostsResponce struct {
 func (r *GetPostsResponce) GetResponce() {
 }
 
-func GetPosts(req *GetPostsRequest, con repository.Connection) (ResponceImpl, error) {
+func getPosts(req *GetPostsRequest, ctx *Context) (ResponceImpl, error) {
+	con := ctx.GetConnection()
 	ps, err := con.GetPosts()
 	if err != nil {
 		return nil, err

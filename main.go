@@ -55,7 +55,8 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 		i.SetRequest(req.Form)
 		i.Validate()
 
-		res, err := i.Execute(con)
+		implCtx := impl.NewContext("user_id", con)
+		res, err := i.Execute(implCtx)
 		if err != nil {
 			errorHandring("server error", ctx)
 			return
