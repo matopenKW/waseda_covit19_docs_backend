@@ -14,8 +14,9 @@ create table activity_programs (
   contact_abstract_1 varchar(255),
   contact_person_2   varchar(255),
   contact_abstract_2 varchar(255),
-  create_time        timestamp,
-  update_time        timestamp,
+  create_time        timestamp default CURRENT_TIMESTAMP,
+  update_time        timestamp default CURRENT_TIMESTAMP,
+  CONSTRAINT routes_PK PRIMARY KEY (id)
 );
 
 INSERT INTO activity_program
