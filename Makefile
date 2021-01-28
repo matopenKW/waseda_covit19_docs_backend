@@ -1,5 +1,5 @@
 # Create Table
-create-table:
+execute-sql:
 ifeq ($(sqlname),)
 	@echo "Please specify SQL file name"
 	@echo "	$ make create-table sqlname=<sql file name>.sql"
