@@ -76,3 +76,14 @@ func (c *dbConnection) SavePost(p *model.Post) (*model.Post, error) {
 
 	return p, nil
 }
+
+func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
+	db := c.db.Where("user_id = ?", UserID)
+
+	var ps []*model.Route
+	err := db.Find(&ps).Error
+	if err != nil {
+		return nil, err
+	}
+	return ps, nil
+}
