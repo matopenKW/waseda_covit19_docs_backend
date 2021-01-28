@@ -2,6 +2,7 @@ package model
 
 type ActivityProgram struct {
 	ID               int `gorm:"primaryKey"`
+	UserId           string
 	Datetime         string
 	StartTime        string
 	EndTime          string
@@ -13,4 +14,6 @@ type ActivityProgram struct {
 	ContactAbstract1 string
 	ContactPerson2   string
 	ContactAbstract2 string
+	CreateTime       string
+	UpdateTime       string
 }

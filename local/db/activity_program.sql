@@ -2,7 +2,8 @@ drop table IF EXISTS activity_program;
 
 create table activity_programs (
   id                 serial primary key,
-  datetime,
+  user_id            varchar(255),
+  datetime           timestamp,
   start_time         timestamp,
   end_time           timestamp,
   practice_section   varchar(255),
@@ -13,12 +14,15 @@ create table activity_programs (
   contact_abstract_1 varchar(255),
   contact_person_2   varchar(255),
   contact_abstract_2 varchar(255),
+  create_time        timestamp,
+  update_time        timestamp,
 );
 
 INSERT INTO activity_program
 VALUES
     (
         1,
+        'user_id',
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP,
         CURRENT_TIMESTAMP,
@@ -29,5 +33,7 @@ VALUES
         'contact_person_1',
         'contact_abstract_1',
         'contact_person_2',
-        'contact_abstract_2'
+        'contact_abstract_2',
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
     );
