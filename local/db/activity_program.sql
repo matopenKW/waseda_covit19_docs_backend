@@ -34,7 +34,5 @@ VALUES
         'contact_person_1',
         'contact_abstract_1',
         'contact_person_2',
-        'contact_abstract_2',
-        CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP
+        'contact_abstract_2'
     );
