@@ -13,6 +13,7 @@ type Connection interface {
 	CreatePost(*model.Post) (*model.Post, error)
 	SavePost(*model.Post) (*model.Post, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
+	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
 }
 
 type Transaction interface {
