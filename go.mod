@@ -5,7 +5,7 @@ go 1.13
 require (
 	cloud.google.com/go/firestore v1.4.0
 	firebase.google.com/go v3.13.0+incompatible
-	github.com/gin-contrib/cors v1.3.1 // indirect
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect

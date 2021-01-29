@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
@@ -23,6 +24,10 @@ func init() {
 
 func main() {
 	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"http://localhost:3000"}
+	r.Use(cors.New(config))
 
 	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
 	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
