@@ -34,3 +34,6 @@ __debug_bin
 
 ### database key ###
 database.env
+
+### firebase key ###
+firebase-adminsdk.json
