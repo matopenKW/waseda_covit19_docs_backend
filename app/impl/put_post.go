@@ -1,26 +1,46 @@
 package impl
 
 import (
-	"net/http"
+	"net/url"
 
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
-func PutPost(db *gorm.DB, c *gin.Context) {
-	result := db.Create(&Post{
+type PutPostRequest struct {
+}
+
+func (r *PutPostRequest) SetRequest(form url.Values) {
+
+}
+
+func (r *PutPostRequest) Validate() error {
+	return nil
+}
+
+func (r *PutPostRequest) Execute(ctx *Context) (ResponceImpl, error) {
+	return putPost(r, ctx)
+}
+
+type PutPostResponce struct {
+	Post *model.Post
+}
+
+func (r *PutPostResponce) GetResponce() {
+}
+
+func putPost(req *PutPostRequest, ctx *Context) (ResponceImpl, error) {
+	con := ctx.GetConnection()
+	p := &model.Post{
 		ID:      2,
 		Content: "content2",
 		Author:  "author2",
-	})
-	if result.Error != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": "dbError",
-		})
-		return
+	}
+	result, err := con.CreatePost(p)
+	if err != nil {
+		return nil, err
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"post": result.Value,
-	})
+	return &PutPostResponce{
+		Post: result,
+	}, nil
 }
