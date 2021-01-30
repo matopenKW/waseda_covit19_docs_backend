@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"log"
-	"os"
 
 	"cloud.google.com/go/firestore"
 	firebase "firebase.google.com/go"
@@ -12,13 +11,10 @@ import (
 )
 
 func OpenAuth() (*auth.Client, error) {
-	ctx := context.Background()
-
-	key := os.Getenv("FIREBASE_ADMIN_KEY")
-	log.Println(key)
-	// opt := option.WithCredentialsJSON([]byte(key))
 	opt := option.WithCredentialsFile("firebase-adminsdk.json")
-	app, err := firebase.NewApp(context.Background(), nil, opt)
+
+	ctx := context.Background()
+	app, err := firebase.NewApp(ctx, nil, opt)
 	if err != nil {
 		return nil, err
 	}
@@ -33,9 +29,6 @@ func OpenAuth() (*auth.Client, error) {
 }
 
 func OpenFirestore() (*firestore.Client, error) {
-	key := os.Getenv("FIREBASE_ADMIN_KEY")
-	log.Println(key)
-	//	opt := option.WithCredentialsJSON([]byte(key))
 	opt := option.WithCredentialsFile("firebase-adminsdk.json")
 
 	ctx := context.Background()
