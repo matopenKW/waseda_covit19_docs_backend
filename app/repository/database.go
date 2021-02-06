@@ -98,3 +98,12 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 	}
 	return ps, nil
 }
+
+func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := c.db.Create(p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return p, nil
+}
