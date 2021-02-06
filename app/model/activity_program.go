@@ -9,7 +9,8 @@ type ActivityProgram struct {
 	PracticeSection  string
 	PracticeContents string
 	VenueID          int
-	RouteID          int
+	Outbound         string
+	ReturnTrip       string
 	ContactPerson1   string
 	ContactAbstract1 string
 	ContactPerson2   string
