@@ -31,7 +31,7 @@ func (r *PutActivityProgramResponce) GetResponce() {
 
 func putActivityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
-	p := &model.ActivityProgram{
+	result, err := con.CreateActivityProgram(&model.ActivityProgram{
 		ID:               2,
 		UserId:           "userid",
 		Datetime:         "Datetime",
@@ -48,8 +48,7 @@ func putActivityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceI
 		ContactAbstract2: "ContactAbstract2",
 		CreateTime:       time.Now(),
 		UpdateTime:       time.Now(),
-	}
-	result, err := con.CreateActivityProgram(p)
+	})
 	if err != nil {
 		return nil, err
 	}
