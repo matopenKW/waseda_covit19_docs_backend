@@ -38,6 +38,7 @@ func main() {
 	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
 	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
 	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
+	r.GET("/api/v1/put_routes", appHandler(&impl.PutRoutesRequest{}))
 
 	r.Run()
 }
