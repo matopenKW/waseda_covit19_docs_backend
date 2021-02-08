@@ -1,5 +1,7 @@
 package model
 
+import "time"
+
 type ActivityProgram struct {
 	ID               int `gorm:"primaryKey"`
 	UserId           string
@@ -15,6 +17,6 @@ type ActivityProgram struct {
 	ContactAbstract1 string
 	ContactPerson2   string
 	ContactAbstract2 string
-	CreateTime       string
-	UpdateTime       string
+	CreateTime       time.Time
+	UpdateTime       time.Time
 }
