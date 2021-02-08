@@ -107,3 +107,12 @@ func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.A
 
 	return p, nil
 }
+
+func (c *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+	err := c.db.Save(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}

@@ -1,16 +1,16 @@
 package impl
 
 import (
-	"net/url"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 type PutActivityProgramRequest struct {
 }
 
-func (r *PutActivityProgramRequest) SetRequest(form url.Values) {
+func (r *PutActivityProgramRequest) SetRequest(ctx *gin.Context) {
 
 }
 

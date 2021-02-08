@@ -1,15 +1,14 @@
 package impl
 
 import (
-	"net/url"
-
+	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 type GetPostsRequest struct {
 }
 
-func (r *GetPostsRequest) SetRequest(form url.Values) {
+func (r *GetPostsRequest) SetRequest(ctx *gin.Context) {
 
 }
 
