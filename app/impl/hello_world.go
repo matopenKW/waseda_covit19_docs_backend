@@ -1,13 +1,11 @@
 package impl
 
-import (
-	"net/url"
-)
+import "github.com/gin-gonic/gin"
 
 type HelloWorldRequest struct {
 }
 
-func (r *HelloWorldRequest) SetRequest(form url.Values) {
+func (r *HelloWorldRequest) SetRequest(ctx *gin.Context) {
 
 }
 

@@ -38,6 +38,7 @@ func main() {
 	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
 	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
 	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
+	r.PUT("/api/v1/put_route", appHandler(&impl.PutRouteRequest{}))
 
 	r.Run()
 }
@@ -52,6 +53,7 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			errorHandring("db connections error", ctx)
 			return
 		}
+		db.LogMode(true)
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
@@ -60,9 +62,6 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			errorHandring("db connections error", ctx)
 			return
 		}
-
-		req := ctx.Request
-		req.ParseForm()
 
 		var token *auth.Token
 		if os.Getenv("ENV") != "prd" {
@@ -76,7 +75,7 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			return
 		}
 
-		i.SetRequest(req.Form)
+		i.SetRequest(ctx)
 		i.Validate()
 
 		implCtx := impl.NewContext(token.UID, con)

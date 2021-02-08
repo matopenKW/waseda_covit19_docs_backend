@@ -1,15 +1,14 @@
 package impl
 
 import (
-	"net/url"
-
+	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 type GetRoutesRequest struct {
 }
 
-func (r *GetRoutesRequest) SetRequest(form url.Values) {
+func (r *GetRoutesRequest) SetRequest(ctx *gin.Context) {
 }
 
 func (r *GetRoutesRequest) Validate() error {
