@@ -87,3 +87,23 @@ func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error)
 	}
 	return ps, nil
 }
+
+func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.ActivityProgram, error) {
+	db := c.db.Where("user_id = ?", UserID)
+
+	var ps []*model.ActivityProgram
+	err := db.Find(&ps).Error
+	if err != nil {
+		return nil, err
+	}
+	return ps, nil
+}
+
+func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := c.db.Create(p)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return p, nil
+}

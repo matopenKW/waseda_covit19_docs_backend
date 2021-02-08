@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -32,7 +33,6 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	r.Use(cors.New(config))
 
-	r.GET("/api/v1/login", login)
 	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
 	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
 	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
@@ -48,6 +48,7 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 		db, err := dbConnection()
 		defer db.Close()
 		if err != nil {
+			log.Println(err)
 			errorHandring("db connections error", ctx)
 			return
 		}
@@ -55,16 +56,30 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
 		if err != nil {
+			log.Println(err)
 			errorHandring("db connections error", ctx)
 			return
 		}
 
 		req := ctx.Request
 		req.ParseForm()
+
+		var token *auth.Token
+		if os.Getenv("ENV") != "prd" {
+			token, err = authDev(ctx)
+		} else {
+			token, err = authJWT(ctx)
+		}
+		if err != nil {
+			log.Println(err)
+			errorHandring(err.Error(), ctx)
+			return
+		}
+
 		i.SetRequest(req.Form)
 		i.Validate()
 
-		implCtx := impl.NewContext("user_id", con)
+		implCtx := impl.NewContext(token.UID, con)
 		res, err := i.Execute(implCtx)
 		if err != nil {
 			errorHandring("server error", ctx)
@@ -85,31 +100,27 @@ func errorHandring(message string, ctx *gin.Context) {
 	})
 }
 
-func login(ctx *gin.Context) {
-
+func authJWT(ctx *gin.Context) (*auth.Token, error) {
 	auth, err := repository.OpenAuth()
 	if err != nil {
 		log.Println(err)
-		errorHandring("Failed Connection error", ctx)
-		return
+		return nil, fmt.Errorf("Failed Connection error")
 	}
 
-	req := ctx.Request
-	// クライアントから送られてきた JWT 取得
-	authHeader := req.Header.Get("Authorization")
+	authHeader := ctx.Request.Header.Get("Authorization")
 	idToken := strings.Replace(authHeader, "Bearer ", "", 1)
 
-	// JWT の検証
 	token, err := auth.VerifyIDToken(context.Background(), idToken)
 	if err != nil {
 		log.Println(err)
-		u := fmt.Sprintf("error verifying ID token: %v\n", err)
-		errorHandring(u, ctx)
-		return
+		return nil, fmt.Errorf(fmt.Sprintf("error verifying ID token: %v\n", err))
 	}
 
-	ctx.JSON(200, gin.H{
-		"Token": token,
-	})
+	return token, nil
+}
 
+func authDev(ctx *gin.Context) (*auth.Token, error) {
+	return &auth.Token{
+		UID: "user_id",
+	}, nil
 }
