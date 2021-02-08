@@ -66,9 +66,9 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 
 		var token *auth.Token
 		if os.Getenv("ENV") != "prd" {
-			token, err = authJWT(ctx)
-		} else {
 			token, err = authDev(ctx)
+		} else {
+			token, err = authJWT(ctx)
 		}
 		if err != nil {
 			log.Println(err)
