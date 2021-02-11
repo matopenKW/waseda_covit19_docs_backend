@@ -1,0 +1,13 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches: [ feature/add-pr-check ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Test PR
+      run: |
+        echo Hello PR
