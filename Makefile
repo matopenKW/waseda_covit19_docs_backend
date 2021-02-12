@@ -14,12 +14,12 @@ server-run:
 
 migrate-up:
 	docker-compose up -d migrate
-	docker exec -it migrate /bin/bash -c "migrate -path db -database ${DATABASE_URL} up"
+	docker exec -it migrate /bin/bash -c "bash migrate.bash up"
 	docker-compose stop migrate
 
 migrate-down:
 	docker-compose up -d migrate
-	echo y | migrate -path db/migrations -database ${DATABASE_URL} down
+	docker exec -it migrate /bin/bash -c "echo y | bash migrate.bash down"
 	docker-compose stop migrate
 
 migrate-force:
@@ -28,7 +28,7 @@ ifeq ($(version),)
 	@echo "	$ make migrate-force version=<version>"
 else
 	docker-compose up -d migrate
-	migrate -path db -database ${DATABASE_URL} force ${version}
+	docker exec -it migrate /bin/bash -c "echo y | bash migrate.bash force ${version}"
 	docker-compose stop migrate
 endif
 
