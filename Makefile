@@ -23,12 +23,12 @@ migrate-down:
 	docker-compose stop migrate
 
 migrate-force:
-ifeq ($(version),)
+ifeq ($(ver),)
 	@echo "Please specify version"
-	@echo "	$ make migrate-force version=<version>"
+	@echo "	$ make migrate-force ver=<version>"
 else
 	docker-compose up -d migrate
-	docker exec -it migrate /bin/bash -c "echo y | bash migrate.bash force ${version}"
+	docker exec -it migrate /bin/bash -c "bash migrate.bash force ${ver}"
 	docker-compose stop migrate
 endif
 
@@ -38,7 +38,7 @@ ifeq ($(sqlname),)
 	@echo "	$ make create-sql sqlname=<sql file name>.sql"
 else
 	docker-compose up -d migrate
-	migrate create -ext sql -dir db -seq ${sqlname}
+	docker exec -it migrate /bin/bash -c "migrate create -ext sql -dir db -seq ${sqlname}"
 	docker-compose stop migrate
 endif
 

@@ -1,1 +1,1 @@
-drop table IF EXISTS activity_programs;
+drop table activity_programs;
