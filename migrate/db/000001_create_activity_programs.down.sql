@@ -1,1 +1,1 @@
-drop table activity_programs;
+DROP TABLE activity_programs;
