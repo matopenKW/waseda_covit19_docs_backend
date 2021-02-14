@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    build: ./local/server
+    container_name: local_app
+    environment:
+      DATABASE_URL: postgres://gwp:gwp@db:5432/gwp?sslmode=disable
+    ports:
+      - 8080:8080
+    tty: true
+    volumes:
+      - ./:/go/src
+    working_dir: /go/src
+  db:
+    build: ./local/db
+    container_name: local_db
+    environment:
+      POSTGRES_USER: gwp
+      POSTGRES_PASSWORD: gwp
+      POSTGRES_DB: gwp
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./local/db/setup.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./local/db/sql:/var/local
+
+volumes:
+  postgres-data:
