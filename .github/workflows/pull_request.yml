@@ -16,7 +16,7 @@ jobs:
       shell: bash
       run: |
         make db-run
-        make migrate-up
+        docker-compose up -d migrate
         ls
     - name: migrate-up
       shell: bash
