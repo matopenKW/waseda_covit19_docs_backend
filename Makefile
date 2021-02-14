@@ -15,12 +15,10 @@ server-run:
 migrate-up:
 	docker-compose up -d migrate
 	docker exec -it migrate /bin/bash -c "bash migrate.bash up"
-	docker-compose stop migrate
 
 migrate-down:
 	docker-compose up -d migrate
 	docker exec -it migrate /bin/bash -c "bash migrate.bash down"
-	docker-compose stop migrate
 
 migrate-force:
 ifeq ($(ver),)
@@ -29,7 +27,6 @@ ifeq ($(ver),)
 else
 	docker-compose up -d migrate
 	docker exec -it migrate /bin/bash -c "bash migrate.bash force ${ver}"
-	docker-compose stop migrate
 endif
 
 create-sql:
@@ -39,7 +36,6 @@ ifeq ($(sqlname),)
 else
 	docker-compose up -d migrate
 	docker exec -it migrate /bin/bash -c "migrate create -ext sql -dir db -seq ${sqlname}"
-	docker-compose stop migrate
 endif
 
 run:

@@ -5,7 +5,7 @@ on:
     branches: [ feature/add-pr-check ]
 
 jobs:
-  deploy:
+  migrate-check:
     runs-on: ubuntu-latest
     steps:
     - name: Test PR
@@ -16,7 +16,13 @@ jobs:
       shell: bash
       run: |
         make db-run
-        exit 1
+    - name: migrate-up
+      shell: bash
+      run: |
+        make migrate-up
+        docker exec -it migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
+        exit $(docker exec local_db /bin/cat /tmp/return-code)
+
 
 
     
