@@ -6,7 +6,7 @@ import (
 	"gopkg.in/gin-gonic/gin.v1"
   )
   
-  func TestHoge(t *testing.T) {
+  func TestHelloWorld_helloWorld(t *testing.T) {
 	req, _ : = http.NewRequest("GET", "/test", nil)
   
 	// Contextセット
