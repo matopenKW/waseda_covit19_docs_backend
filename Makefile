@@ -4,7 +4,6 @@ init:
 	docker exec -it local_app /bin/sh -c "go get"
 	docker-compose stop app
 
-
 db-run:
 	docker-compose up -d db
 
