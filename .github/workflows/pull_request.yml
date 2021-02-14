@@ -21,6 +21,10 @@ jobs:
       shell: bash
       run: |
         docker exec migrate /bin/bash -c "bash migrate.bash up"
+    - name: migrate-down
+      shell: bash
+      run: |
+        docker exec migrate /bin/bash -c "echo -y | bash migrate.bash down"
 
 
 
