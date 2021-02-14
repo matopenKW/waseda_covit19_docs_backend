@@ -1,4 +1,4 @@
-name: Deploy
+name: PullRequest
 
 on:
   pull_request:
@@ -12,21 +12,25 @@ jobs:
       run: |
         echo Hello PR
     - uses: actions/checkout@v2
-    - name: compose-run
+    - name: Docker Compose Run
       shell: bash
       run: |
         make db-run
         docker-compose up -d migrate
-    - name: migrate-up
+    - name: Check Migrate Up
       shell: bash
       run: |
         docker exec migrate /bin/bash -c "bash migrate.bash up"
-    - name: migrate-down
+    - name: Check Migrate Down
       shell: bash
       run: |
         docker exec migrate /bin/bash -c "echo -y | bash migrate.bash down"
-
-
-
-    
-
+  go-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Test Go
+      run: echo start go test
+    - name: Docker Compose Run
+      shell: bash
+      run: docker-compose up -d app
