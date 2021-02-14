@@ -1,6 +1,4 @@
-drop table IF EXISTS activity_programs;
-
-create table activity_programs (
+CREATE TABLE activity_programs (
   id                 serial,
   user_id            varchar(255),
   datetime           timestamp,
