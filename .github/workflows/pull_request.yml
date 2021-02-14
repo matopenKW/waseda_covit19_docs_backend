@@ -17,11 +17,11 @@ jobs:
       run: |
         make db-run
         docker-compose up -d migrate
-        docker container ls
-        docker exec -it migrate /bin/bash -c 'ls'
     - name: migrate-up
       shell: bash
       run: |
+        docker container ls
+        docker exec -it migrate /bin/bash -c 'ls'
         docker exec -it migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
         exit $(docker exec local_db /bin/cat /tmp/return-code)
 
