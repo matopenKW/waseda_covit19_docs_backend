@@ -12,9 +12,12 @@ jobs:
       run: |
         echo Hello PR
     - uses: actions/checkout@v2
-
     - name: compose-run
       shell: bash
       run: |
-        docker-compose up -d db
+        make db-run
+        exit 1
+
+
+    
 

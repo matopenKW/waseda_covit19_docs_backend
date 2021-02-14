@@ -19,7 +19,7 @@ migrate-up:
 
 migrate-down:
 	docker-compose up -d migrate
-	docker exec -it migrate /bin/bash -c "echo y | bash migrate.bash down"
+	docker exec -it migrate /bin/bash -c "bash migrate.bash down"
 	docker-compose stop migrate
 
 migrate-force:
