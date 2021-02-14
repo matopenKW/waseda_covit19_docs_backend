@@ -17,7 +17,7 @@ jobs:
       run: |
         make db-run
         docker-compose up -d migrate
-        docker exec -it migrate /bin/ls
+        docker exec -it migrate /bin/bash -c 'ls'
     - name: migrate-up
       shell: bash
       run: |
