@@ -6,6 +6,9 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
+type dbMockRepository struct {
+}
+
 type dbMockConnection struct {
 	db *gorm.DB
 }
@@ -14,10 +17,12 @@ type dbMockTransaction struct {
 	db *gorm.DB
 }
 
-func (r *dbRepository) NewMockConnection() (Connection, error) {
-	return &dbConnection{
-		db: r.db,
-	}, nil
+func NewMockDbRepository() Repository {
+	return &dbMockRepository{}
+}
+
+func (r *dbMockRepository) NewConnection() (Connection, error) {
+	return &dbMockConnection{}, nil
 }
 
 func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
@@ -51,60 +56,25 @@ func (c *dbMockConnection) GetPosts() ([]*model.Post, error) {
 }
 
 func (c *dbMockConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	result := c.db.Create(p)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return p, nil
+	return nil, nil
 }
 
 func (c *dbMockConnection) SavePost(p *model.Post) (*model.Post, error) {
-	err := c.db.Save(p).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
+	return nil, nil
 }
 
 func (c *dbMockConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
-	db := c.db.Where("user_id = ?", UserID)
-
-	var ps []*model.Route
-	err := db.Find(&ps).Error
-	if err != nil {
-		return nil, err
-	}
-	return ps, nil
+	return nil, nil
 }
 
 func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model.ActivityProgram, error) {
-	db := c.db.Where("user_id = ?", UserID)
-
-	var ps []*model.ActivityProgram
-	err := db.Find(&ps).Error
-	if err != nil {
-		return nil, err
-	}
-	return ps, nil
+	return nil, nil
 }
 
 func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
-	result := c.db.Create(p)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return p, nil
+	return nil, nil
 }
 
 func (c *dbMockConnection) SaveRoute(r *model.Route) (*model.Route, error) {
-	err := c.db.Save(r).Error
-	if err != nil {
-		return nil, err
-	}
-
-	return r, nil
+	return nil, nil
 }

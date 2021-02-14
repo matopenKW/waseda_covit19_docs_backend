@@ -1,12 +1,17 @@
 package impl
 
-import "github.com/gin-gonic/gin"
+import (
+	"fmt"
+
+	"github.com/gin-gonic/gin"
+)
 
 type HelloWorldRequest struct {
+	Message string `json:"message"`
 }
 
 func (r *HelloWorldRequest) SetRequest(ctx *gin.Context) {
-
+	_ = ctx.ShouldBindJSON(&r)
 }
 
 func (r *HelloWorldRequest) Validate() error {
@@ -26,6 +31,6 @@ func (r *HelloWorldResponce) GetResponce() {
 
 func helloWorld(req *HelloWorldRequest, ctx *Context) (ResponceImpl, error) {
 	return &HelloWorldResponce{
-		Message: "hello world",
+		Message: fmt.Sprintf("hello world %s", req.Message),
 	}, nil
 }
