@@ -20,9 +20,9 @@ jobs:
     - name: migrate-up
       shell: bash
       run: |
-        docker container ls
-        docker exec migrate /bin/bash -c 'ls'
-        docker exec -it migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
+        docker exec migrate /bin/bash -c "bash migrate.bash up"
+        docker exec migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
+        exit $(docker exec local_db /bin/cat /tmp/return-code)
 
 
 
