@@ -1,1 +1,1 @@
-DROP TABLE routs;
+DROP TABLE routes;
