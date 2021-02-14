@@ -21,7 +21,7 @@ jobs:
       shell: bash
       run: |
         docker container ls
-        docker exec -it migrate /bin/bash -c 'ls'
+        docker exec migrate /bin/bash -c 'ls'
         docker exec -it migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
 
 
