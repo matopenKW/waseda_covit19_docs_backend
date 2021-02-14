@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS routes;
-
 CREATE TABLE routes (
   id                 serial,
   user_id            varchar(50),
