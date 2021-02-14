@@ -23,7 +23,6 @@ jobs:
         docker container ls
         docker exec -it migrate /bin/bash -c 'ls'
         docker exec -it migrate /bin/bash -c 'false; echo $? > /tmp/return-code'
-        exit $(docker exec local_db /bin/cat /tmp/return-code)
 
 
 
