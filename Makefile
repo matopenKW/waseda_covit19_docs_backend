@@ -1,6 +1,6 @@
 # init
 init:
-	docker-compose up -d
+	docker-compose up -d app
 	docker exec -it local_app /bin/sh -c "go get"
 	docker-compose stop app
 
