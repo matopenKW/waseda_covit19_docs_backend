@@ -52,3 +52,7 @@ ifeq ($(sqlname),)
 else
 	docker exec -it local_db /bin/bash -c "PGPASSWORD=gwp psql gwp -U gwp -f var/local/${sqlname}.sql"
 endif
+
+go-test:
+	docker-compose up -d app
+	docker exec -it local_app /bin/sh -c "go test ./..."
