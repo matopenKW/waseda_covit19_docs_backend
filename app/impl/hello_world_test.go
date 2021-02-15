@@ -50,7 +50,7 @@ func TestHelloWorld_Validate_Fail(t *testing.T) {
 	impl := &HelloWorldRequest{}
 
 	err := impl.Validate()
-	if err == nil {
+	if err != nil {
 		t.Fatalf("Validate errord. target=%#v, err=%#v", impl, err)
 	}
 }
