@@ -15,6 +15,9 @@ func (r *HelloWorldRequest) SetRequest(ctx *gin.Context) {
 }
 
 func (r *HelloWorldRequest) Validate() error {
+	if r.Message == "" {
+		return fmt.Errorf("Message is Blank. req=%#v", r)
+	}
 	return nil
 }
 

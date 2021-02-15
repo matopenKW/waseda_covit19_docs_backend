@@ -46,7 +46,16 @@ func TestHelloWorld_Validate(t *testing.T) {
 	}
 }
 
-func TestHelloWorld_helloWorld(t *testing.T) {
+func TestHelloWorld_Validate_Fail(t *testing.T) {
+	impl := &HelloWorldRequest{}
+
+	err := impl.Validate()
+	if err == nil {
+		t.Fatalf("Validate errord. target=%#v, err=%#v", impl, err)
+	}
+}
+
+func TestHelloWorld_Execute(t *testing.T) {
 	want := &HelloWorldResponce{
 		Message: "hello world test_message",
 	}
