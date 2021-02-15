@@ -33,4 +33,4 @@ jobs:
       run: echo start go test
     - name: Docker Compose Run
       shell: bash
-      run: docker-compose up -d app
+      run: make go-test
