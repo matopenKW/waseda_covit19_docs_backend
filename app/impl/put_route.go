@@ -6,6 +6,7 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+// PutRouteRequest is put route request
 type PutRouteRequest struct {
 	ID          int    `json:"id"`
 	Name        string `json:"name"`
@@ -13,26 +14,32 @@ type PutRouteRequest struct {
 	ReturnTrip  string `json:"return_trip"`
 }
 
+// SetRequest is request set receiver
 func (r *PutRouteRequest) SetRequest(ctx *gin.Context) {
 	_ = ctx.ShouldBindJSON(&r)
 }
 
+// Validate is validate receiver
 func (r *PutRouteRequest) Validate() error {
 	return nil
 }
 
+// Execute is api execute receiver
 func (r *PutRouteRequest) Execute(ctx *Context) (ResponceImpl, error) {
-	return PutRoute(r, ctx)
+	return putRoute(r, ctx)
 }
 
+// PutRouteResponce is put route responce
 type PutRouteResponce struct {
 	Route *model.Route
 }
 
+// GetResponce is responce get receiver
 func (r *PutRouteResponce) GetResponce() {
 }
 
-func PutRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
+// putRoute is api execute function of private
+func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
 	var err error

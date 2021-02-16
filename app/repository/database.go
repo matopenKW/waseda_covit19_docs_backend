@@ -18,6 +18,7 @@ type dbTransaction struct {
 	db *gorm.DB
 }
 
+// NewDbRepository is db repository creater
 func NewDbRepository(db *gorm.DB) Repository {
 	return &dbRepository{
 		db: db,
@@ -115,4 +116,15 @@ func (c *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 	}
 
 	return r, nil
+}
+
+func (c *dbTransaction) DeleteRoute(id model.RouteID) error {
+	err := c.db.Delete(&model.Route{
+		ID: id,
+	}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
