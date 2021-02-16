@@ -17,6 +17,7 @@ type dbMockTransaction struct {
 	db *gorm.DB
 }
 
+// NewMockDbRepository is mock db repository creater
 func NewMockDbRepository() Repository {
 	return &dbMockRepository{}
 }
@@ -75,6 +76,10 @@ func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*mod
 	return nil, nil
 }
 
-func (c *dbMockConnection) SaveRoute(r *model.Route) (*model.Route, error) {
+func (c *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 	return nil, nil
+}
+
+func (c *dbMockTransaction) DeleteRoute(id model.RouteID) error {
+	return nil
 }
