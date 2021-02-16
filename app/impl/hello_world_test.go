@@ -59,9 +59,9 @@ func TestHelloWorld_Execute(t *testing.T) {
 	want := &HelloWorldResponce{
 		Message: "hello world test_message",
 	}
-
-	dbMock := repository.NewMockDbRepository()
-	con, _ := dbMock.NewConnection()
+	mock := repository.NewDBMock()
+	repo := repository.NewMockDbRepository(mock)
+	con, _ := repo.NewConnection()
 	implCtx := NewContext("test_user_id", con)
 
 	impl := &HelloWorldRequest{

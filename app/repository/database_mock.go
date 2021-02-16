@@ -1,24 +1,35 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
-
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
+
+var mock dbMock
+
+type dbMock struct {
+	routes []*model.Route
+}
+
+func NewDBMock() *dbMock {
+	return &dbMock{}
+}
+
+func (m *dbMock) SetRoutes(rs []*model.Route) {
+	m.routes = rs
+}
 
 type dbMockRepository struct {
 }
 
 type dbMockConnection struct {
-	db *gorm.DB
 }
 
 type dbMockTransaction struct {
-	db *gorm.DB
 }
 
 // NewMockDbRepository is mock db repository creater
-func NewMockDbRepository() Repository {
+func NewMockDbRepository(m *dbMock) Repository {
+	mock = *m
 	return &dbMockRepository{}
 }
 
@@ -27,22 +38,7 @@ func (r *dbMockRepository) NewConnection() (Connection, error) {
 }
 
 func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
-	tx := c.db.Begin()
-
-	err := f(&dbTransaction{
-		db: tx,
-	})
-	if err != nil {
-		tx.Rollback()
-		return err
-	}
-
-	err = tx.Commit().Error
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return f(&dbMockTransaction{})
 }
 
 func (c *dbMockConnection) GetPosts() ([]*model.Post, error) {
@@ -64,6 +60,15 @@ func (c *dbMockConnection) SavePost(p *model.Post) (*model.Post, error) {
 	return nil, nil
 }
 
+func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
+	for _, v := range mock.routes {
+		if v.ID == id {
+			return v, nil
+		}
+	}
+	return nil, nil
+}
+
 func (c *dbMockConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
 	return nil, nil
 }
@@ -76,10 +81,20 @@ func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*mod
 	return nil, nil
 }
 
-func (c *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+
 	return nil, nil
 }
 
-func (c *dbMockTransaction) DeleteRoute(id model.RouteID) error {
+func (t *dbMockTransaction) DeleteRoute(id model.RouteID) error {
+	ret := make([]*model.Route, 0, 0)
+	for _, v := range mock.routes {
+		if v.ID == id {
+			continue
+		}
+		ret = append(ret, v)
+	}
+
+	mock.routes = ret
 	return nil
 }

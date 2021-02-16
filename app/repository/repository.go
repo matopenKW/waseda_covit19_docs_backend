@@ -12,6 +12,7 @@ type Connection interface {
 	GetPosts() ([]*model.Post, error)
 	CreatePost(*model.Post) (*model.Post, error)
 	SavePost(*model.Post) (*model.Post, error)
+	FindRoute(model.RouteID) (*model.Route, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
 	CreateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
