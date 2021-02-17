@@ -41,25 +41,6 @@ func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
 }
 
-func (c *dbMockConnection) GetPosts() ([]*model.Post, error) {
-	return []*model.Post{
-		{
-			ID:      1,
-			Content: "test_content",
-			Author:  "author",
-		},
-		{},
-	}, nil
-}
-
-func (c *dbMockConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	return nil, nil
-}
-
-func (c *dbMockConnection) SavePost(p *model.Post) (*model.Post, error) {
-	return nil, nil
-}
-
 func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 	for _, v := range mock.routes {
 		if v.ID == id {
@@ -77,7 +58,7 @@ func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model
 	return nil, nil
 }
 
-func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+func (t *dbMockTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
 	return nil, nil
 }
 

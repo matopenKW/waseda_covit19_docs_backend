@@ -43,7 +43,6 @@ type PutRouteResponce struct {
 func (r *PutRouteResponce) GetResponce() {
 }
 
-// putRoute is api execute function of private
 func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 

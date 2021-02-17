@@ -50,34 +50,6 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) GetPosts() ([]*model.Post, error) {
-	var ps []*model.Post
-	err := c.db.Find(&ps).Error
-	if err != nil {
-		return nil, err
-	}
-	return ps, nil
-}
-
-func (c *dbConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	result := c.db.Create(p)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return p, nil
-}
-
-func (c *dbConnection) SavePost(p *model.Post) (*model.Post, error) {
-	err := c.db.Save(p).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
-}
-
 func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 	r := &model.Route{
 		ID: id,
@@ -111,8 +83,8 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 	return ps, nil
 }
 
-func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
-	result := c.db.Create(p)
+func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := t.db.Create(p)
 	if result.Error != nil {
 		return nil, result.Error
 	}

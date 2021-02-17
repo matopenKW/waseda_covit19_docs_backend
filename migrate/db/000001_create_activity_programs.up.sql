@@ -16,21 +16,3 @@ CREATE TABLE activity_programs (
   update_time        timestamp default CURRENT_TIMESTAMP,
   CONSTRAINT activity_programs_PK PRIMARY KEY (id)
 );
-
-INSERT INTO activity_programs
-VALUES
-    (
-        1,
-        'user_id',
-        CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP,
-        CURRENT_TIMESTAMP,
-        'practice_section',
-        'practice_Contents',
-        1,
-        1,
-        'contact_person_1',
-        'contact_abstract_1',
-        'contact_person_2',
-        'contact_abstract_2'
-    );
