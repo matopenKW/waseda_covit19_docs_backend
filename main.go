@@ -33,12 +33,9 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000"}
 	r.Use(cors.New(config))
 
-	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
-	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
-	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
-	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
 	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
 	r.PUT("/api/v1/put_route", appHandler(&impl.PutRouteRequest{}))
+	r.DELETE("/api/v1/delete_route", appHandler(&impl.PutRouteRequest{}))
 
 	r.Run()
 }

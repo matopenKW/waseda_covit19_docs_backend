@@ -13,7 +13,7 @@ import (
 )
 
 func TestDeleteRoute_SetRequest(t *testing.T) {
-	want := DeleteRouteRequest{
+	want := &DeleteRouteRequest{
 		RouteID: 1,
 	}
 	wantJSON, err := json.Marshal(want)
@@ -31,7 +31,7 @@ func TestDeleteRoute_SetRequest(t *testing.T) {
 	impl := &DeleteRouteRequest{}
 	impl.SetRequest(ctx)
 
-	if reflect.DeepEqual(want, impl) {
+	if !reflect.DeepEqual(want, impl) {
 		t.Errorf("SetRequest is fatal. impl=%#v, want=%#v", impl, want)
 	}
 }
