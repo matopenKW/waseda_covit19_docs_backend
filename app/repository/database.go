@@ -89,6 +89,15 @@ func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 	return r, nil
 }
 
+func (c *dbConnection) FindMaxRouteID() (model.RouteID, error) {
+	r := &model.Route{}
+	err := c.db.Last(r).Error
+	if err != nil {
+		return 0, err
+	}
+	return r.ID, nil
+}
+
 func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
 	db := c.db.Where("user_id = ?", UserID)
 
@@ -118,6 +127,15 @@ func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.A
 	}
 
 	return p, nil
+}
+
+func (t *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Save(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
 }
 
 func (t *dbTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {

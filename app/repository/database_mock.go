@@ -69,6 +69,16 @@ func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 	return nil, nil
 }
 
+func (c *dbMockConnection) FindMaxRouteID() (model.RouteID, error) {
+	id := model.RouteID(0)
+	for _, v := range mock.routes {
+		if id < v.ID {
+			id = v.ID
+		}
+	}
+	return id, nil
+}
+
 func (c *dbMockConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
 	return nil, nil
 }
@@ -79,6 +89,20 @@ func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model
 
 func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
 	return nil, nil
+}
+
+func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+	exists := false
+	for _, v := range mock.routes {
+		if v.ID == r.ID {
+			exists = true
+			break
+		}
+	}
+	if exists {
+		return t.UpdateRoute(r)
+	}
+	return t.CreateRoute(r)
 }
 
 func (t *dbMockTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {

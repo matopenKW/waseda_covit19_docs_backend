@@ -13,12 +13,14 @@ type Connection interface {
 	CreatePost(*model.Post) (*model.Post, error)
 	SavePost(*model.Post) (*model.Post, error)
 	FindRoute(model.RouteID) (*model.Route, error)
+	FindMaxRouteID() (model.RouteID, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
 	CreateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
 }
 
 type Transaction interface {
+	SaveRoute(*model.Route) (*model.Route, error)
 	UpdateRoute(*model.Route) (*model.Route, error)
 	CreateRoute(*model.Route) (*model.Route, error)
 	DeleteRoute(model.RouteID) error
