@@ -120,8 +120,8 @@ func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.A
 	return p, nil
 }
 
-func (c *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
-	err := c.db.Save(r).Error
+func (t *dbTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Update(r).Error
 	if err != nil {
 		return nil, err
 	}
@@ -129,8 +129,17 @@ func (c *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 	return r, nil
 }
 
-func (c *dbTransaction) DeleteRoute(id model.RouteID) error {
-	err := c.db.Delete(&model.Route{
+func (t *dbTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Create(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
+func (t *dbTransaction) DeleteRoute(id model.RouteID) error {
+	err := t.db.Delete(&model.Route{
 		ID: id,
 	}).Error
 	if err != nil {
