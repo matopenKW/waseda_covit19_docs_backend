@@ -1,6 +1,8 @@
 package impl
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
@@ -8,7 +10,7 @@ import (
 
 // PutRouteRequest is put route request
 type PutRouteRequest struct {
-	ID          int    `json:"id"`
+	RouteID     int    `json:"route_id"`
 	Name        string `json:"name"`
 	OutwardTrip string `json:"outward_trip"`
 	ReturnTrip  string `json:"return_trip"`
@@ -21,6 +23,9 @@ func (r *PutRouteRequest) SetRequest(ctx *gin.Context) {
 
 // Validate is validate receiver
 func (r *PutRouteRequest) Validate() error {
+	if r.Name == "" {
+		return fmt.Errorf("Invalid Name. Name is blank")
+	}
 	return nil
 }
 
@@ -42,15 +47,24 @@ func (r *PutRouteResponce) GetResponce() {
 func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
-	var err error
-	var route *model.Route
+	route, err := con.FindRoute(model.RouteID(req.RouteID))
 	err = con.RunTransaction(func(tx repository.Transaction) error {
-		route, err = tx.SaveRoute(&model.Route{
-			UserID:      ctx.userID,
-			Name:        req.Name,
-			OutwardTrip: req.OutwardTrip,
-			ReturnTrip:  req.ReturnTrip,
-		})
+		if route == nil {
+			route, err = tx.CreateRoute(&model.Route{
+				UserID:      ctx.userID,
+				Name:        req.Name,
+				OutwardTrip: req.OutwardTrip,
+				ReturnTrip:  req.ReturnTrip,
+			})
+		} else {
+			route, err = tx.UpdateRoute(&model.Route{
+				ID:          route.ID,
+				UserID:      ctx.userID,
+				Name:        req.Name,
+				OutwardTrip: req.OutwardTrip,
+				ReturnTrip:  req.ReturnTrip,
+			})
+		}
 
 		if err != nil {
 			return err

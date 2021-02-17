@@ -81,20 +81,41 @@ func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*mod
 	return nil, nil
 }
 
-func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+func (t *dbMockTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
+	for _, v := range mock.routes {
+		if v.ID == r.ID {
+			v.ID = r.ID
+			v.UserID = r.UserID
+			v.Name = r.Name
+			v.OutwardTrip = r.OutwardTrip
+			v.ReturnTrip = r.ReturnTrip
+		}
+		return r, nil
+	}
+	return r, nil
+}
 
-	return nil, nil
+func (t *dbMockTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
+	id := model.RouteID(0)
+	for _, v := range mock.routes {
+		if id <= v.ID {
+			id = v.ID
+		}
+	}
+	r.ID = id + 1
+	mock.routes = append(mock.routes, r)
+	return r, nil
 }
 
 func (t *dbMockTransaction) DeleteRoute(id model.RouteID) error {
-	ret := make([]*model.Route, 0, 0)
+	rs := make([]*model.Route, 0, 0)
 	for _, v := range mock.routes {
 		if v.ID == id {
 			continue
 		}
-		ret = append(ret, v)
+		rs = append(rs, v)
 	}
 
-	mock.routes = ret
+	mock.routes = rs
 	return nil
 }

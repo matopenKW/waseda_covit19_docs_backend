@@ -19,6 +19,7 @@ type Connection interface {
 }
 
 type Transaction interface {
-	SaveRoute(*model.Route) (*model.Route, error)
+	UpdateRoute(*model.Route) (*model.Route, error)
+	CreateRoute(*model.Route) (*model.Route, error)
 	DeleteRoute(model.RouteID) error
 }
