@@ -19,10 +19,11 @@ import (
 )
 
 func init() {
-	_, err := dbConnection()
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("error db connection")
+	if os.Getenv("DATABASE_URL") == "" {
+		panic("init error. db url env is brank")
+	}
+	if os.Getenv("FRONT_URL") == "" {
+		panic("init error. front url env is brank")
 	}
 }
 
@@ -30,7 +31,7 @@ func main() {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	r.Use(cors.New(config))
 
 	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
