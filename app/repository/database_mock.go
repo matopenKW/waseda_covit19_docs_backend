@@ -7,7 +7,8 @@ import (
 var mock dbMock
 
 type dbMock struct {
-	routes []*model.Route
+	activityPrograms []*model.ActivityProgram
+	routes           []*model.Route
 }
 
 func NewDBMock() *dbMock {
@@ -41,23 +42,14 @@ func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
 }
 
-func (c *dbMockConnection) GetPosts() ([]*model.Post, error) {
-	return []*model.Post{
-		{
-			ID:      1,
-			Content: "test_content",
-			Author:  "author",
-		},
-		{},
-	}, nil
-}
-
-func (c *dbMockConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	return nil, nil
-}
-
-func (c *dbMockConnection) SavePost(p *model.Post) (*model.Post, error) {
-	return nil, nil
+func (c *dbMockConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
+	id := model.ActivityProgramID(0)
+	for _, v := range mock.activityPrograms {
+		if id < v.ID {
+			id = v.ID
+		}
+	}
+	return id, nil
 }
 
 func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
@@ -87,7 +79,7 @@ func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model
 	return nil, nil
 }
 
-func (c *dbMockConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+func (t *dbMockTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
 	return nil, nil
 }
 

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -50,32 +52,13 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) GetPosts() ([]*model.Post, error) {
-	var ps []*model.Post
-	err := c.db.Find(&ps).Error
-	if err != nil {
-		return nil, err
+func (c *dbConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
+	r := &model.ActivityProgram{}
+	err := c.db.Last(r).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, err
 	}
-	return ps, nil
-}
-
-func (c *dbConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	result := c.db.Create(p)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return p, nil
-}
-
-func (c *dbConnection) SavePost(p *model.Post) (*model.Post, error) {
-	err := c.db.Save(p).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
+	return r.ID, nil
 }
 
 func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
@@ -92,7 +75,7 @@ func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 func (c *dbConnection) FindMaxRouteID() (model.RouteID, error) {
 	r := &model.Route{}
 	err := c.db.Last(r).Error
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, err
 	}
 	return r.ID, nil
@@ -120,8 +103,8 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 	return ps, nil
 }
 
-func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
-	result := c.db.Create(p)
+func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := t.db.Create(p)
 	if result.Error != nil {
 		return nil, result.Error
 	}
