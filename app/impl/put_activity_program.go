@@ -1,6 +1,7 @@
 package impl
 
 import (
+	"log"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -8,8 +9,8 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-// PutActivityProgramRequest is put activity program request
-type PutActivityProgramRequest struct {
+// ActivityProgramRequest is put activity program request
+type ActivityProgramRequest struct {
 	Datetime         *time.Time `json:"datetime"`
 	StartTime        string     `json:"start_time"`
 	EndTime          string     `json:"end_time"`
@@ -25,36 +26,42 @@ type PutActivityProgramRequest struct {
 }
 
 // SetRequest is request set receiver
-func (r *PutActivityProgramRequest) SetRequest(ctx *gin.Context) {
+func (r *ActivityProgramRequest) SetRequest(ctx *gin.Context) {
 	_ = ctx.ShouldBindJSON(&r)
 }
 
 // Validate is validate receiver
-func (r *PutActivityProgramRequest) Validate() error {
+func (r *ActivityProgramRequest) Validate() error {
 	return nil
 }
 
 // Execute is api execute receiver
-func (r *PutActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) {
-	return putActivityProgram(r, ctx)
+func (r *ActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) {
+	return activityProgram(r, ctx)
 }
 
-// PutActivityProgramResponce is put activity program responce
-type PutActivityProgramResponce struct {
+// ActivityProgramResponce is put activity program responce
+type ActivityProgramResponce struct {
 	Post *model.ActivityProgram
 }
 
 // GetResponce is responce get receiver
-func (r *PutActivityProgramResponce) GetResponce() {
+func (r *ActivityProgramResponce) GetResponce() {
 }
 
-func putActivityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
+func activityProgram(req *ActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
+	log.Println(req)
+
+	maxID, err := con.FindMaxActivityProgramID()
+	if err != nil {
+		return nil, err
+	}
 
 	var result *model.ActivityProgram
-	var err error
 	err = con.RunTransaction(func(tx repository.Transaction) error {
 		result, err = tx.CreateActivityProgram(&model.ActivityProgram{
+			ID:               maxID + 1,
 			UserID:           ctx.userID,
 			Datetime:         req.Datetime,
 			StartTime:        req.StartTime,
@@ -78,7 +85,26 @@ func putActivityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceI
 		return nil, err
 	}
 
-	return &PutActivityProgramResponce{
+	return &ActivityProgramResponce{
 		Post: result,
 	}, nil
 }
+
+// FIXME test data
+// `
+// {
+// 	"datetime": null,
+// 	"start_time": "0900",
+// 	"end_time": "1800",
+// 	"practice_section": "aaa",
+// 	"practice_contents": "ssss",
+// 	"venue_id": 1,
+// 	"route_id": 3,
+// 	"outward_trip": "",
+// 	"return_trip": "",
+// 	"contact_person1": false,
+// 	"contact_abstract1": "",
+// 	"contact_person2": false,
+// 	"contact_abstract2": ""
+// }
+// `

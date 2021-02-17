@@ -7,7 +7,8 @@ import (
 var mock dbMock
 
 type dbMock struct {
-	routes []*model.Route
+	activityPrograms []*model.ActivityProgram
+	routes           []*model.Route
 }
 
 func NewDBMock() *dbMock {
@@ -39,6 +40,16 @@ func (r *dbMockRepository) NewConnection() (Connection, error) {
 
 func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
+}
+
+func (c *dbMockConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
+	id := model.ActivityProgramID(0)
+	for _, v := range mock.activityPrograms {
+		if id < v.ID {
+			id = v.ID
+		}
+	}
+	return id, nil
 }
 
 func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {

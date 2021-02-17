@@ -34,6 +34,7 @@ func main() {
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	r.Use(cors.New(config))
 
+	r.POST("/api/v1/activity_program", appHandler(&impl.ActivityProgramRequest{}))
 	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
 	r.PUT("/api/v1/put_route", appHandler(&impl.PutRouteRequest{}))
 	r.DELETE("/api/v1/delete_route", appHandler(&impl.DeleteRouteRequest{}))
@@ -79,7 +80,8 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 		implCtx := impl.NewContext(token.UID, con)
 		res, err := i.Execute(implCtx)
 		if err != nil {
-			errorHandring("server error", ctx)
+			log.Println(err)
+			errorHandring("servr ereror", ctx)
 			return
 		}
 

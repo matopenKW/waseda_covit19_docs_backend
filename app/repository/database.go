@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -50,6 +52,15 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
+func (c *dbConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
+	r := &model.ActivityProgram{}
+	err := c.db.Last(r).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, err
+	}
+	return r.ID, nil
+}
+
 func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 	r := &model.Route{
 		ID: id,
@@ -64,7 +75,7 @@ func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
 func (c *dbConnection) FindMaxRouteID() (model.RouteID, error) {
 	r := &model.Route{}
 	err := c.db.Last(r).Error
-	if err != nil {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, err
 	}
 	return r.ID, nil
