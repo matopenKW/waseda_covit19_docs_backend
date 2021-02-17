@@ -46,24 +46,28 @@ func (r *PutRouteResponce) GetResponce() {
 func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
-	route, err := con.FindRoute(model.RouteID(req.RouteID))
+	fmt.Println(req)
+
+	var route *model.Route
+	var err error
 	err = con.RunTransaction(func(tx repository.Transaction) error {
-		if route == nil {
-			route, err = tx.CreateRoute(&model.Route{
-				UserID:      ctx.userID,
-				Name:        req.Name,
-				OutwardTrip: req.OutwardTrip,
-				ReturnTrip:  req.ReturnTrip,
-			})
+		var rID model.RouteID
+		if req.RouteID == 0 {
+			maxID, err := con.FindMaxRouteID()
+			if err != nil {
+				return err
+			}
+			rID = maxID + 1
 		} else {
-			route, err = tx.UpdateRoute(&model.Route{
-				ID:          route.ID,
-				UserID:      ctx.userID,
-				Name:        req.Name,
-				OutwardTrip: req.OutwardTrip,
-				ReturnTrip:  req.ReturnTrip,
-			})
+			rID = model.RouteID(req.RouteID)
 		}
+		route, err = tx.SaveRoute(&model.Route{
+			ID:          rID,
+			UserID:      ctx.userID,
+			Name:        req.Name,
+			OutwardTrip: req.OutwardTrip,
+			ReturnTrip:  req.ReturnTrip,
+		})
 
 		if err != nil {
 			return err

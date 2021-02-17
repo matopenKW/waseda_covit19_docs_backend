@@ -36,7 +36,7 @@ func main() {
 
 	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
 	r.PUT("/api/v1/put_route", appHandler(&impl.PutRouteRequest{}))
-	r.DELETE("/api/v1/delete_route", appHandler(&impl.PutRouteRequest{}))
+	r.DELETE("/api/v1/delete_route", appHandler(&impl.DeleteRouteRequest{}))
 
 	r.Run()
 }
