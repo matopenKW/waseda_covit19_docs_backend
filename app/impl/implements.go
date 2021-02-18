@@ -22,6 +22,10 @@ func (c *Context) GetConnection() repository.Connection {
 	return c.connection
 }
 
+type ServiceImpl interface {
+	New() RequestImpl
+}
+
 type RequestImpl interface {
 	SetRequest(*gin.Context)
 	Validate() error
