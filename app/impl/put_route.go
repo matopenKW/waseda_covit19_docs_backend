@@ -8,6 +8,14 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+// PutRouteService is put route service
+type PutRouteService struct{}
+
+// New is put route service new
+func (s *PutRouteService) New() RequestImpl {
+	return &PutRouteRequest{}
+}
+
 // PutRouteRequest is put route request
 type PutRouteRequest struct {
 	RouteID     int    `json:"route_id"`

@@ -9,6 +9,14 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+// ActivityProgramService is activity program service
+type ActivityProgramService struct{}
+
+// New is activity program service new
+func (s *ActivityProgramService) New() RequestImpl {
+	return &ActivityProgramRequest{}
+}
+
 // ActivityProgramRequest is put activity program request
 type ActivityProgramRequest struct {
 	Datetime         *time.Time `json:"datetime"`

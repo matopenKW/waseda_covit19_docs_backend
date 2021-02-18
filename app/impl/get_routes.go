@@ -5,6 +5,14 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
+// GetRoutesService is get routes service
+type GetRoutesService struct{}
+
+// New is get routes service new
+func (s *GetRoutesService) New() RequestImpl {
+	return &GetRoutesRequest{}
+}
+
 type GetRoutesRequest struct {
 }
 

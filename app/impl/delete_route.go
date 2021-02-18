@@ -6,7 +6,15 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-// DeleteRouteRequest is put route request
+// DeleteRouteService is delete route service
+type DeleteRouteService struct{}
+
+// New is delete route service new
+func (s *DeleteRouteService) New() RequestImpl {
+	return &DeleteRouteRequest{}
+}
+
+// DeleteRouteRequest is delete route request
 type DeleteRouteRequest struct {
 	RouteID int `json:"route_id"`
 }

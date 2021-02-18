@@ -18,6 +18,13 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+var serviceImpl struct {
+	activityProgramService impl.ActivityProgramService
+	getRoutesService       impl.GetRoutesService
+	putRouteService        impl.PutRouteService
+	deleteRouteService     impl.DeleteRouteService
+}
+
 func init() {
 	if os.Getenv("DATABASE_URL") == "" {
 		panic("init error. db url env is brank")
@@ -34,16 +41,18 @@ func main() {
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	r.Use(cors.New(config))
 
-	r.POST("/api/v1/activity_program", appHandler(&impl.ActivityProgramRequest{}))
-	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
-	r.PUT("/api/v1/put_route", appHandler(&impl.PutRouteRequest{}))
-	r.DELETE("/api/v1/delete_route", appHandler(&impl.DeleteRouteRequest{}))
+	r.POST("/api/v1/activity_program", appHandler(&serviceImpl.activityProgramService))
+	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
+	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
+	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 
 	r.Run()
 }
 
-func appHandler(i impl.RequestImpl) func(*gin.Context) {
+func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 	return func(ctx *gin.Context) {
+		req := s.New()
+
 		// dbConnection
 		db, err := dbConnection()
 		defer db.Close()
@@ -74,11 +83,11 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			return
 		}
 
-		i.SetRequest(ctx)
-		i.Validate()
+		req.SetRequest(ctx)
+		req.Validate()
 
 		implCtx := impl.NewContext(token.UID, con)
-		res, err := i.Execute(implCtx)
+		res, err := req.Execute(implCtx)
 		if err != nil {
 			log.Println(err)
 			errorHandring("servr ereror", ctx)
@@ -95,7 +104,7 @@ func dbConnection() (*gorm.DB, error) {
 
 func errorHandring(message string, ctx *gin.Context) {
 	ctx.JSON(http.StatusInternalServerError, gin.H{
-		"error": message,
+		"message": message,
 	})
 }
 
