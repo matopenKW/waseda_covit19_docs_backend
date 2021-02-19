@@ -84,7 +84,12 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		}
 
 		req.SetRequest(ctx)
-		req.Validate()
+		err = req.Validate()
+		if err != nil {
+			log.Println(err)
+			errorHandring("servr ereror", ctx)
+			return
+		}
 
 		implCtx := impl.NewContext(token.UID, con)
 		res, err := req.Execute(implCtx)
