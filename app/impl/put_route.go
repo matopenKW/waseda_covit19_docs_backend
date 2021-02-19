@@ -59,18 +59,8 @@ func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	var route *model.Route
 	var err error
 	err = con.RunTransaction(func(tx repository.Transaction) error {
-		var rID model.RouteID
-		if req.RouteID == 0 {
-			maxID, err := con.FindMaxRouteID()
-			if err != nil {
-				return err
-			}
-			rID = maxID + 1
-		} else {
-			rID = model.RouteID(req.RouteID)
-		}
 		route, err = tx.SaveRoute(&model.Route{
-			ID:          rID,
+			ID:          model.RouteID(req.RouteID),
 			UserID:      ctx.userID,
 			Name:        req.Name,
 			OutwardTrip: req.OutwardTrip,
