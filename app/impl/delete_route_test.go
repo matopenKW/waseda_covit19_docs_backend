@@ -2,7 +2,6 @@ package impl
 
 import (
 	"bytes"
-	"encoding/json"
 	"net/http"
 	"reflect"
 	"testing"
@@ -13,15 +12,13 @@ import (
 )
 
 func TestDeleteRoute_SetRequest(t *testing.T) {
+	rID := 1
 	want := &DeleteRouteRequest{
-		RouteID: 1,
-	}
-	wantJSON, err := json.Marshal(want)
-	if err != nil {
-		t.Fatalf("MarshalJSON errord. err=%#v", err)
+		RouteID: &rID,
 	}
 
-	req, _ := http.NewRequest("GET", "/api/v1/delete_put", bytes.NewBuffer(wantJSON))
+	bs := []byte(`{"route_id":1}`)
+	req, _ := http.NewRequest("GET", "/api/v1/delete_put", bytes.NewBuffer(bs))
 
 	var ctx *gin.Context
 	ctx = &gin.Context{
@@ -37,10 +34,21 @@ func TestDeleteRoute_SetRequest(t *testing.T) {
 }
 
 func TestDeleteRoute_Validate(t *testing.T) {
-	impl := &DeleteRouteRequest{}
+	rID := 1
+	impl := &DeleteRouteRequest{
+		RouteID: &rID,
+	}
 	err := impl.Validate()
 	if err != nil {
 		t.Fatalf("Validate errord. target=%#v, err=%#v", impl, err)
+	}
+}
+
+func TestDeleteRoute_Validate_Fail(t *testing.T) {
+	impl := &DeleteRouteRequest{}
+	err := impl.Validate()
+	if err == nil {
+		t.Fatalf("Validate not errord. target=%#v, err=%#v", impl, err)
 	}
 }
 
@@ -60,8 +68,9 @@ func TestDeleteRoute_Execute(t *testing.T) {
 	con, _ := repo.NewConnection()
 	implCtx := NewContext("test_user_id", con)
 
+	rID := 1
 	impl := &DeleteRouteRequest{
-		RouteID: 1,
+		RouteID: &rID,
 	}
 	got, err := impl.Execute(implCtx)
 	if err != nil {
@@ -88,8 +97,9 @@ func TestDeleteRoute_DeleteRoute(t *testing.T) {
 	con, _ := repo.NewConnection()
 	implCtx := NewContext("test_user_id", con)
 
+	rID := 1
 	impl := &DeleteRouteRequest{
-		RouteID: 1,
+		RouteID: &rID,
 	}
 	_, err := impl.Execute(implCtx)
 	if err != nil {
