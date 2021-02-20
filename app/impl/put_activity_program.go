@@ -2,62 +2,62 @@ package impl
 
 import (
 	"log"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
-// ActivityProgramService is activity program service
-type ActivityProgramService struct{}
+// PutActivityProgramService is put activity program service
+type PutActivityProgramService struct{}
 
 // New is activity program service new
-func (s *ActivityProgramService) New() RequestImpl {
-	return &ActivityProgramRequest{}
+func (s *PutActivityProgramService) New() RequestImpl {
+	return &PutActivityProgramRequest{}
 }
 
-// ActivityProgramRequest is put activity program request
-type ActivityProgramRequest struct {
-	Datetime         *time.Time `json:"datetime"`
-	StartTime        string     `json:"start_time"`
-	EndTime          string     `json:"end_time"`
-	PracticeSection  string     `json:"practice_section"`
-	PracticeContents string     `json:"practice_contents"`
-	VenueID          int        `json:"venue_id"`
-	OutwardTrip      string     `json:"outward_trip"`
-	ReturnTrip       string     `json:"return_trip"`
-	ContactPerson1   bool       `json:"contact_person_1"`
-	ContactAbstract1 string     `json:"contact_abstract_1"`
-	ContactPerson2   bool       `json:"contact_person_2"`
-	ContactAbstract2 string     `json:"contact_abstract_2"`
+// PutActivityProgramRequest is put activity program request
+type PutActivityProgramRequest struct {
+	Datetime         string `json:"datetime"`
+	StartTime        string `json:"start_time"`
+	EndTime          string `json:"end_time"`
+	PracticeSection  string `json:"practice_section"`
+	PracticeContents string `json:"practice_contents"`
+	VenueID          int    `json:"venue_id"`
+	RouteID          int    `json:"route_id"`
+	OutwardTrip      string `json:"outward_trip"`
+	ReturnTrip       string `json:"return_trip"`
+	ContactPerson1   bool   `json:"contact_person1"`
+	ContactAbstract1 string `json:"contact_abstract1"`
+	ContactPerson2   bool   `json:"contact_person2"`
+	ContactAbstract2 string `json:"contact_abstract2"`
 }
 
 // SetRequest is request set receiver
-func (r *ActivityProgramRequest) SetRequest(ctx *gin.Context) {
+func (r *PutActivityProgramRequest) SetRequest(ctx *gin.Context) {
 	_ = ctx.ShouldBindJSON(&r)
 }
 
 // Validate is validate receiver
-func (r *ActivityProgramRequest) Validate() error {
+func (r *PutActivityProgramRequest) Validate() error {
 	return nil
 }
 
 // Execute is api execute receiver
-func (r *ActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) {
+func (r *PutActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) {
 	return activityProgram(r, ctx)
 }
 
-// ActivityProgramResponce is put activity program responce
-type ActivityProgramResponce struct {
+// PutActivityProgramResponce is put activity program responce
+type PutActivityProgramResponce struct {
 	Post *model.ActivityProgram
 }
 
 // GetResponce is responce get receiver
-func (r *ActivityProgramResponce) GetResponce() {
+func (r *PutActivityProgramResponce) GetResponce() {
 }
 
-func activityProgram(req *ActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
+func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 	log.Println(req)
 
@@ -93,7 +93,7 @@ func activityProgram(req *ActivityProgramRequest, ctx *Context) (ResponceImpl, e
 		return nil, err
 	}
 
-	return &ActivityProgramResponce{
+	return &PutActivityProgramResponce{
 		Post: result,
 	}, nil
 }

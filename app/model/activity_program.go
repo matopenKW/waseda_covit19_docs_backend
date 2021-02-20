@@ -1,13 +1,11 @@
 package model
 
-import "time"
-
 type ActivityProgramID int
 
 type ActivityProgram struct {
 	ID               ActivityProgramID `gorm:"primaryKey"`
 	UserID           string
-	Datetime         *time.Time
+	Datetime         string
 	StartTime        string
 	EndTime          string
 	PracticeSection  string
