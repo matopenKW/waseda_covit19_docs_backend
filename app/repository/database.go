@@ -52,13 +52,32 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
-	r := &model.ActivityProgram{}
-	err := c.db.Last(r).Error
+func (c *dbConnection) FindActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
+	err := c.db.Find(ap).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return ap, nil
+}
+
+func (c *dbConnection) FindActivityProgramMaxSeqNo(userID string) (model.ActivityProgramSeqNo, error) {
+	ap := &model.ActivityProgram{}
+	err := c.db.Limit(1).Order("seq_no DESC").Where("user_id = ?", userID).Find(ap).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, err
 	}
-	return r.ID, nil
+	return ap.SeqNo, nil
+}
+
+func (c *dbConnection) ListActivityPrograms(userID string) ([]*model.ActivityProgram, error) {
+	aps := []*model.ActivityProgram{}
+	err := c.db.Find(&aps).Where("user_id = ?", userID).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return aps, nil
 }
 
 func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {

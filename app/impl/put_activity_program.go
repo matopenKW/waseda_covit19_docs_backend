@@ -46,7 +46,7 @@ func (r *PutActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) 
 
 // PutActivityProgramResponce is put activity program responce
 type PutActivityProgramResponce struct {
-	Post *model.ActivityProgram
+	ActivityProgram *model.ActivityProgram
 }
 
 // GetResponce is responce get receiver
@@ -56,7 +56,7 @@ func (r *PutActivityProgramResponce) GetResponce() {
 func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
-	maxID, err := con.FindMaxActivityProgramID()
+	maxSeq, err := con.FindActivityProgramMaxSeqNo(ctx.userID)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl
 	var result *model.ActivityProgram
 	err = con.RunTransaction(func(tx repository.Transaction) error {
 		result, err = tx.CreateActivityProgram(&model.ActivityProgram{
-			ID:                 maxID + 1,
 			UserID:             ctx.userID,
+			SeqNo:              maxSeq + 1,
 			Datetime:           req.Datetime,
 			StartTime:          req.StartTime,
 			EndTime:            req.EndTime,
@@ -88,25 +88,6 @@ func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl
 	}
 
 	return &PutActivityProgramResponce{
-		Post: result,
+		ActivityProgram: result,
 	}, nil
 }
-
-// FIXME test data
-// `
-// {
-// 	"datetime": null,
-// 	"start_time": "0900",
-// 	"end_time": "1800",
-// 	"practice_section": "aaa",
-// 	"practice_contents": "ssss",
-// 	"venue_id": 1,
-// 	"route_id": 3,
-// 	"outward_trip": "",
-// 	"return_trip": "",
-// 	"contact_person1": false,
-// 	"contact_abstract1": "",
-// 	"contact_person2": false,
-// 	"contact_abstract2": ""
-// }
-// `

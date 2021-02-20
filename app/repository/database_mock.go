@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"fmt"
+
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
@@ -13,6 +15,10 @@ type dbMock struct {
 
 func NewDBMock() *dbMock {
 	return &dbMock{}
+}
+
+func (m *dbMock) SetActivityPrograms(aps []*model.ActivityProgram) {
+	m.activityPrograms = aps
 }
 
 func (m *dbMock) SetRoutes(rs []*model.Route) {
@@ -42,14 +48,33 @@ func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
 }
 
-func (c *dbMockConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
-	id := model.ActivityProgramID(0)
+func (c *dbMockConnection) FindActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
 	for _, v := range mock.activityPrograms {
-		if id < v.ID {
-			id = v.ID
+		if v.UserID == ap.UserID && v.SeqNo == ap.SeqNo {
+			return v, nil
 		}
 	}
-	return id, nil
+	return nil, nil
+}
+
+func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID string) (model.ActivityProgramSeqNo, error) {
+	seq := model.ActivityProgramSeqNo(0)
+	for _, v := range mock.activityPrograms {
+		if v.UserID == userID {
+			seq = v.SeqNo
+		}
+	}
+	return seq, nil
+}
+
+func (c *dbMockConnection) ListActivityPrograms(userID string) ([]*model.ActivityProgram, error) {
+	aps := []*model.ActivityProgram{}
+	for _, v := range mock.activityPrograms {
+		if v.UserID == userID {
+			aps = append(aps, v)
+		}
+	}
+	return aps, nil
 }
 
 func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
@@ -79,8 +104,14 @@ func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model
 	return nil, nil
 }
 
-func (t *dbMockTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
-	return nil, nil
+func (t *dbMockTransaction) CreateActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
+	for _, v := range mock.activityPrograms {
+		if v.UserID == ap.UserID && v.SeqNo == ap.SeqNo {
+			return nil, fmt.Errorf("conflict")
+		}
+	}
+	mock.activityPrograms = append(mock.activityPrograms, ap)
+	return ap, nil
 }
 
 func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
