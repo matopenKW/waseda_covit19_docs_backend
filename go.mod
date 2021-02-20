@@ -1,6 +1,7 @@
 module github.com/matopenKW/waseda_covit19_docs_backend
 
-go 1.13
+// +heroku goVersion go1.14
+go 1.14
 
 require (
 	cloud.google.com/go/firestore v1.4.0
