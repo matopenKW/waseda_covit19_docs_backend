@@ -1,6 +1,6 @@
 CREATE TABLE activity_programs (
-  id                   serial,
   user_id              varchar(255),
+  seq_no               serial,
   datetime             varchar(8),
   start_time           varchar(4),
   end_time             varchar(4),
@@ -14,5 +14,5 @@ CREATE TABLE activity_programs (
   contact_abstract2    varchar(255),
   create_time          timestamp default CURRENT_TIMESTAMP,
   update_time          timestamp default CURRENT_TIMESTAMP,
-  CONSTRAINT activity_programs_PK PRIMARY KEY (id)
+  CONSTRAINT activity_programs_PK PRIMARY KEY (user_id, seq_no)
 );
