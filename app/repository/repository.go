@@ -9,13 +9,17 @@ type Repository interface {
 type Connection interface {
 	RunTransaction(f func(Transaction) error) error
 
-	GetPosts() ([]*model.Post, error)
-	CreatePost(*model.Post) (*model.Post, error)
-	SavePost(*model.Post) (*model.Post, error)
+	FindMaxActivityProgramID() (model.ActivityProgramID, error)
+	FindRoute(model.RouteID) (*model.Route, error)
+	FindMaxRouteID() (model.RouteID, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
-	CreateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
 }
 
 type Transaction interface {
+	CreateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
+	SaveRoute(*model.Route) (*model.Route, error)
+	UpdateRoute(*model.Route) (*model.Route, error)
+	CreateRoute(*model.Route) (*model.Route, error)
+	DeleteRoute(model.RouteID) error
 }

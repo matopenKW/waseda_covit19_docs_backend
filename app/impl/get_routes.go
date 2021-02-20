@@ -1,15 +1,22 @@
 package impl
 
 import (
-	"net/url"
-
+	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
+
+// GetRoutesService is get routes service
+type GetRoutesService struct{}
+
+// New is get routes service new
+func (s *GetRoutesService) New() RequestImpl {
+	return &GetRoutesRequest{}
+}
 
 type GetRoutesRequest struct {
 }
 
-func (r *GetRoutesRequest) SetRequest(form url.Values) {
+func (r *GetRoutesRequest) SetRequest(ctx *gin.Context) {
 }
 
 func (r *GetRoutesRequest) Validate() error {

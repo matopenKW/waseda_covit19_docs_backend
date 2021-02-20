@@ -1,12 +1,10 @@
-drop table IF EXISTS posts;
+drop table IF EXISTS constants;
 
-create table posts (
+create table constants (
   id      serial primary key,
-  content text,
-  author  varchar(255)
+  name    varchar(255)
 );
 
-INSERT INTO posts VALUES (1, 'contentA', 'authorA');
 
 
 

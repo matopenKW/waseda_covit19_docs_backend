@@ -1,8 +1,33 @@
 # waseda_covit19_docs_backend
 
-## localDB
+## init
+**Please docker installed**
 ```
-// postgres://user:pass@host:port/dbname
-$ export DATABASE_URL=postgres://gwp:gwp@localhost:5432/gwp?sslmode=disable
+$ make init
+```
 
+## run app 
+```
+$ make server-run
+```
+
+## stop app 
+```
+$ make server-run
+```
+
+## run web server
+```
+$ make run
+```
+
+## run db
+```
+$ make db-run
+```
+
+## execute sql
+**db is running**
+```
+$ make create-table sqlname=<sql file name>.sql"
 ```

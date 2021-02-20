@@ -18,11 +18,19 @@ import (
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+var serviceImpl struct {
+	putActivityProgramService impl.PutActivityProgramService
+	getRoutesService          impl.GetRoutesService
+	putRouteService           impl.PutRouteService
+	deleteRouteService        impl.DeleteRouteService
+}
+
 func init() {
-	_, err := dbConnection()
-	if err != nil {
-		fmt.Println(err.Error())
-		panic("error db connection")
+	if os.Getenv("DATABASE_URL") == "" {
+		panic("init error. db url env is brank")
+	}
+	if os.Getenv("FRONT_URL") == "" {
+		panic("init error. front url env is brank")
 	}
 }
 
@@ -30,20 +38,21 @@ func main() {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
+	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	r.Use(cors.New(config))
 
-	r.GET("/api/v1/hello_world", appHandler(&impl.HelloWorldRequest{}))
-	r.GET("/api/v1/post", appHandler(&impl.GetPostsRequest{}))
-	r.GET("/api/v1/post_put", appHandler(&impl.PutPostRequest{}))
-	r.GET("/api/v1/post_update", appHandler(&impl.UpdatePostRequest{}))
-	r.GET("/api/v1/get_routes", appHandler(&impl.GetRoutesRequest{}))
+	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
+	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
+	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
+	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 
 	r.Run()
 }
 
-func appHandler(i impl.RequestImpl) func(*gin.Context) {
+func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 	return func(ctx *gin.Context) {
+		req := s.New()
+
 		// dbConnection
 		db, err := dbConnection()
 		defer db.Close()
@@ -52,6 +61,7 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			errorHandring("db connections error", ctx)
 			return
 		}
+		db.LogMode(true)
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
@@ -60,9 +70,6 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			errorHandring("db connections error", ctx)
 			return
 		}
-
-		req := ctx.Request
-		req.ParseForm()
 
 		var token *auth.Token
 		if os.Getenv("ENV") != "prd" {
@@ -76,13 +83,19 @@ func appHandler(i impl.RequestImpl) func(*gin.Context) {
 			return
 		}
 
-		i.SetRequest(req.Form)
-		i.Validate()
+		req.SetRequest(ctx)
+		err = req.Validate()
+		if err != nil {
+			log.Println(err)
+			errorHandring("servr ereror", ctx)
+			return
+		}
 
 		implCtx := impl.NewContext(token.UID, con)
-		res, err := i.Execute(implCtx)
+		res, err := req.Execute(implCtx)
 		if err != nil {
-			errorHandring("server error", ctx)
+			log.Println(err)
+			errorHandring("servr ereror", ctx)
 			return
 		}
 
@@ -96,7 +109,7 @@ func dbConnection() (*gorm.DB, error) {
 
 func errorHandring(message string, ctx *gin.Context) {
 	ctx.JSON(http.StatusInternalServerError, gin.H{
-		"error": message,
+		"message": message,
 	})
 }
 

@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"errors"
+
 	"github.com/jinzhu/gorm"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -18,6 +20,7 @@ type dbTransaction struct {
 	db *gorm.DB
 }
 
+// NewDbRepository is db repository creater
 func NewDbRepository(db *gorm.DB) Repository {
 	return &dbRepository{
 		db: db,
@@ -49,32 +52,33 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) GetPosts() ([]*model.Post, error) {
-	var ps []*model.Post
-	err := c.db.Find(&ps).Error
+func (c *dbConnection) FindMaxActivityProgramID() (model.ActivityProgramID, error) {
+	r := &model.ActivityProgram{}
+	err := c.db.Last(r).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, err
+	}
+	return r.ID, nil
+}
+
+func (c *dbConnection) FindRoute(id model.RouteID) (*model.Route, error) {
+	r := &model.Route{
+		ID: id,
+	}
+	err := c.db.Find(r).Error
 	if err != nil {
 		return nil, err
 	}
-	return ps, nil
+	return r, nil
 }
 
-func (c *dbConnection) CreatePost(p *model.Post) (*model.Post, error) {
-	result := c.db.Create(p)
-	if result.Error != nil {
-		return nil, result.Error
+func (c *dbConnection) FindMaxRouteID() (model.RouteID, error) {
+	r := &model.Route{}
+	err := c.db.Last(r).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return 0, err
 	}
-
-	return p, nil
-}
-
-func (c *dbConnection) SavePost(p *model.Post) (*model.Post, error) {
-	err := c.db.Save(p).Error
-
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
+	return r.ID, nil
 }
 
 func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
@@ -99,11 +103,49 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 	return ps, nil
 }
 
-func (c *dbConnection) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
-	result := c.db.Create(p)
+func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := t.db.Create(p)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
 	return p, nil
+}
+
+func (t *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Save(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
+func (t *dbTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Update(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
+func (t *dbTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
+	err := t.db.Create(r).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return r, nil
+}
+
+func (t *dbTransaction) DeleteRoute(id model.RouteID) error {
+	err := t.db.Delete(&model.Route{
+		ID: id,
+	}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
