@@ -1,10 +1,10 @@
 package model
 
-type ActivityProgramID int
+type ActivityProgramSeqNo int
 
 type ActivityProgram struct {
-	ID                 ActivityProgramID `gorm:"primaryKey"`
-	UserID             string
+	UserID             string               `gorm:"primaryKey"`
+	SeqNo              ActivityProgramSeqNo `gorm:"primaryKey"`
 	Datetime           string
 	StartTime          string
 	EndTime            string
