@@ -39,6 +39,14 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
+	config.AllowMethods = []string{"GET", "PUT", "DELETE"}
+	config.AllowHeaders = []string{
+		"Access-Control-Allow-Headers",
+		"Content-Type",
+		"Content-Length",
+		"Accept-Encoding",
+		"X-CSRF-Token",
+		"Authorization"}
 	r.Use(cors.New(config))
 
 	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
