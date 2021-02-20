@@ -12,25 +12,25 @@ import (
 
 func TestActivityProgramService_SetRequest(t *testing.T) {
 	want := &PutActivityProgramRequest{
-		Datetime:         "20200101",
-		StartTime:        "0900",
-		EndTime:          "1800",
-		PracticeSection:  "test_practice_section",
-		PracticeContents: "test_practice_contents",
-		OutwardTrip:      "test_outward_trip",
-		ReturnTrip:       "test_return_trip",
-		ContactPerson1:   1,
-		ContactAbstract1: "test_contact_abstract1",
-		ContactPerson2:   1,
-		ContactAbstract2: "test_contact_abstract2",
+		Datetime:           "20200101",
+		StartTime:          "0900",
+		EndTime:            "1800",
+		PracticeSectionID:  1,
+		PracticeContentsID: 1,
+		OutwardTrip:        "test_outward_trip",
+		ReturnTrip:         "test_return_trip",
+		ContactPerson1:     1,
+		ContactAbstract1:   "test_contact_abstract1",
+		ContactPerson2:     1,
+		ContactAbstract2:   "test_contact_abstract2",
 	}
 
 	bs := []byte(`{
 			"datetime": "20200101",
 			"start_time": "0900",
 			"end_time": "1800",
-			"practice_section": "test_practice_section",
-			"practice_contents": "test_practice_contents",
+			"practice_section_id": 1,
+			"practice_contents_id": 1,
 			"outward_trip": "test_outward_trip",
 			"return_trip": "test_return_trip",
 			"contact_person1": 1,
