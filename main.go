@@ -114,7 +114,7 @@ func errorHandring(message string, ctx *gin.Context) {
 }
 
 func authJWT(ctx *gin.Context) (*auth.Token, error) {
-	auth, err := repository.OpenAuth()
+	auth, err := repository.OpenAuthJSON()
 	if err != nil {
 		log.Println(err)
 		return nil, fmt.Errorf("Failed Connection error")
