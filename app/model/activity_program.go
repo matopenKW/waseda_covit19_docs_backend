@@ -1,23 +1,19 @@
 package model
 
-import "time"
-
 type ActivityProgramID int
 
 type ActivityProgram struct {
-	ID               ActivityProgramID `gorm:"primaryKey"`
-	UserID           string
-	Datetime         *time.Time
-	StartTime        string
-	EndTime          string
-	PracticeSection  string
-	PracticeContents string
-	VenueID          int
-	RouteID          int
-	OutwardTrip      string
-	ReturnTrip       string
-	ContactPerson1   bool
-	ContactAbstract1 string
-	ContactPerson2   bool
-	ContactAbstract2 string
+	ID                 ActivityProgramID `gorm:"primaryKey"`
+	UserID             string
+	Datetime           string
+	StartTime          string
+	EndTime            string
+	PracticeSectionID  uint
+	PracticeContentsID uint
+	OutwardTrip        string
+	ReturnTrip         string
+	ContactPerson1     int
+	ContactAbstract1   string
+	ContactPerson2     int
+	ContactAbstract2   string
 }

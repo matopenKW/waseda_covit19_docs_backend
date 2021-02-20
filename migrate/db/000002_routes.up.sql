@@ -8,13 +8,3 @@ CREATE TABLE routes (
   create_time        timestamp default CURRENT_TIMESTAMP,
   CONSTRAINT routes_PK PRIMARY KEY (id)
 );
-
-INSERT INTO routes
-VALUES
-    (
-        1,
-        'user_id',
-        'name',
-        'outward_trip',
-        'return_trip'
-    );

@@ -19,10 +19,10 @@ import (
 )
 
 var serviceImpl struct {
-	activityProgramService impl.ActivityProgramService
-	getRoutesService       impl.GetRoutesService
-	putRouteService        impl.PutRouteService
-	deleteRouteService     impl.DeleteRouteService
+	putActivityProgramService impl.PutActivityProgramService
+	getRoutesService          impl.GetRoutesService
+	putRouteService           impl.PutRouteService
+	deleteRouteService        impl.DeleteRouteService
 }
 
 func init() {
@@ -41,7 +41,7 @@ func main() {
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	r.Use(cors.New(config))
 
-	r.POST("/api/v1/activity_program", appHandler(&serviceImpl.activityProgramService))
+	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
 	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
