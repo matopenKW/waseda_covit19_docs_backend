@@ -17,13 +17,11 @@ func TestActivityProgramService_SetRequest(t *testing.T) {
 		EndTime:          "1800",
 		PracticeSection:  "test_practice_section",
 		PracticeContents: "test_practice_contents",
-		VenueID:          1,
-		RouteID:          3,
 		OutwardTrip:      "test_outward_trip",
 		ReturnTrip:       "test_return_trip",
-		ContactPerson1:   false,
+		ContactPerson1:   1,
 		ContactAbstract1: "test_contact_abstract1",
-		ContactPerson2:   false,
+		ContactPerson2:   1,
 		ContactAbstract2: "test_contact_abstract2",
 	}
 
@@ -33,16 +31,14 @@ func TestActivityProgramService_SetRequest(t *testing.T) {
 			"end_time": "1800",
 			"practice_section": "test_practice_section",
 			"practice_contents": "test_practice_contents",
-			"venue_id": 1,
-			"route_id": 3,
 			"outward_trip": "test_outward_trip",
 			"return_trip": "test_return_trip",
-			"contact_person1": false,
+			"contact_person1": 1,
 			"contact_abstract1": "test_contact_abstract1",
-			"contact_person2": false,
+			"contact_person2": 1,
 			"contact_abstract2": "test_contact_abstract2"
 		}`)
-	req, _ := http.NewRequest("GET", "/api/v1/put_put", bytes.NewBuffer(bs))
+	req, _ := http.NewRequest("GET", "/api/v1/put_activity_program", bytes.NewBuffer(bs))
 
 	var ctx *gin.Context
 	ctx = &gin.Context{

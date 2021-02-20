@@ -1,8 +1,6 @@
 package impl
 
 import (
-	"log"
-
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
@@ -18,19 +16,17 @@ func (s *PutActivityProgramService) New() RequestImpl {
 
 // PutActivityProgramRequest is put activity program request
 type PutActivityProgramRequest struct {
-	Datetime         string `json:"datetime"`
-	StartTime        string `json:"start_time"`
-	EndTime          string `json:"end_time"`
-	PracticeSection  string `json:"practice_section"`
-	PracticeContents string `json:"practice_contents"`
-	VenueID          int    `json:"venue_id"`
-	RouteID          int    `json:"route_id"`
-	OutwardTrip      string `json:"outward_trip"`
-	ReturnTrip       string `json:"return_trip"`
-	ContactPerson1   bool   `json:"contact_person1"`
-	ContactAbstract1 string `json:"contact_abstract1"`
-	ContactPerson2   bool   `json:"contact_person2"`
-	ContactAbstract2 string `json:"contact_abstract2"`
+	Datetime           string `json:"datetime"`
+	StartTime          string `json:"start_time"`
+	EndTime            string `json:"end_time"`
+	PracticeSectionID  uint   `json:"practice_section_id"`
+	PracticeContentsID uint   `json:"practice_contents_id"`
+	OutwardTrip        string `json:"outward_trip"`
+	ReturnTrip         string `json:"return_trip"`
+	ContactPerson1     int    `json:"contact_person1"`
+	ContactAbstract1   string `json:"contact_abstract1"`
+	ContactPerson2     int    `json:"contact_person2"`
+	ContactAbstract2   string `json:"contact_abstract2"`
 }
 
 // SetRequest is request set receiver
@@ -59,7 +55,6 @@ func (r *PutActivityProgramResponce) GetResponce() {
 
 func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
-	log.Println(req)
 
 	maxID, err := con.FindMaxActivityProgramID()
 	if err != nil {
@@ -69,20 +64,19 @@ func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl
 	var result *model.ActivityProgram
 	err = con.RunTransaction(func(tx repository.Transaction) error {
 		result, err = tx.CreateActivityProgram(&model.ActivityProgram{
-			ID:               maxID + 1,
-			UserID:           ctx.userID,
-			Datetime:         req.Datetime,
-			StartTime:        req.StartTime,
-			EndTime:          req.EndTime,
-			PracticeSection:  req.PracticeSection,
-			PracticeContents: req.PracticeContents,
-			VenueID:          req.VenueID,
-			OutwardTrip:      req.OutwardTrip,
-			ReturnTrip:       req.ReturnTrip,
-			ContactPerson1:   req.ContactPerson1,
-			ContactAbstract1: req.ContactAbstract1,
-			ContactPerson2:   req.ContactPerson2,
-			ContactAbstract2: req.ContactAbstract2,
+			ID:                 maxID + 1,
+			UserID:             ctx.userID,
+			Datetime:           req.Datetime,
+			StartTime:          req.StartTime,
+			EndTime:            req.EndTime,
+			PracticeSectionID:  req.PracticeSectionID,
+			PracticeContentsID: req.PracticeContentsID,
+			OutwardTrip:        req.OutwardTrip,
+			ReturnTrip:         req.ReturnTrip,
+			ContactPerson1:     req.ContactPerson1,
+			ContactAbstract1:   req.ContactAbstract1,
+			ContactPerson2:     req.ContactPerson2,
+			ContactAbstract2:   req.ContactAbstract2,
 		})
 		if err != nil {
 			return err
