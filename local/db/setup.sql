@@ -5,7 +5,6 @@ create table constants (
   name    varchar(255)
 );
 
-INSERT INTO constants VALUES (1, 'test');
 
 
 
