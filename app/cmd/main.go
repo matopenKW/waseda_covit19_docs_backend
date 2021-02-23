@@ -4,12 +4,11 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/cmd/upload"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
 func main() {
@@ -22,7 +21,7 @@ func exec(args []string) {
 		panic("not args")
 	}
 
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := repository.NewDbConnection()
 	if err != nil {
 		panic(fmt.Sprintf("db error; %s", err.Error()))
 	}
