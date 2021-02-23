@@ -9,7 +9,6 @@ db-run:
 
 server-run:
 	docker-compose up -d app
-	docker exec -it local_app /bin/sh -c "go run main.go"
 
 migrate-up:
 	docker-compose up -d migrate
@@ -40,6 +39,7 @@ endif
 run:
 	make db-run
 	make server-run
+	docker exec -it local_app /bin/sh -c "go run main.go"
 
 stop:
 	docker-compose stop
