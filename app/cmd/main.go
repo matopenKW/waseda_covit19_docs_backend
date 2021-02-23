@@ -4,6 +4,8 @@ import (
 	"flag"
 	"log"
 
+	_ "github.com/lib/pq"
+
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/cmd/upload"
 )
 

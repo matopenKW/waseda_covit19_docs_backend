@@ -5,14 +5,16 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 
 	"github.com/jinzhu/gorm"
+
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 	"google.golang.org/api/drive/v3"
 )
 
 func UploadHistoriesCsv(args ...string) error {
-	db, err := repository.NewDbConnection()
+	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Println(err.Error())
 		return err
