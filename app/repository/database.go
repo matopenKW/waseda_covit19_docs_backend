@@ -2,11 +2,18 @@ package repository
 
 import (
 	"errors"
+	"os"
 
 	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
+
+// NewDbConnection is db connection
+func NewDbConnection() (*gorm.DB, error) {
+	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+}
 
 type dbRepository struct {
 	db *gorm.DB
