@@ -11,7 +11,6 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
@@ -64,14 +63,13 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		req := s.New()
 
 		// dbConnection
-		db, err := dbConnection()
-		defer db.Close()
+		db, err := repository.NewDbConnection()
 		if err != nil {
 			log.Println(err)
 			errorHandring("db connections error", ctx)
 			return
 		}
-		db.LogMode(true)
+		defer db.Close()
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
@@ -85,6 +83,7 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		if os.Getenv("ENV") != "prd" {
 			token, err = authDev(ctx)
 		} else {
+			db.LogMode(true)
 			token, err = authJWT(ctx)
 		}
 		if err != nil {
@@ -111,10 +110,6 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 
 		ctx.JSON(http.StatusOK, res)
 	}
-}
-
-func dbConnection() (*gorm.DB, error) {
-	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 }
 
 func errorHandring(message string, ctx *gin.Context) {
