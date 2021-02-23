@@ -52,8 +52,9 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) FindActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
-	err := c.db.Find(ap).Error
+func (c *dbConnection) FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
+	ap := &model.ActivityProgram{}
+	err := c.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Find(&ap).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	} else if errors.Is(err, gorm.ErrRecordNotFound) {

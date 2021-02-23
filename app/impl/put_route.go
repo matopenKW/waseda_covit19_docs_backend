@@ -54,8 +54,6 @@ func (r *PutRouteResponce) GetResponce() {
 func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
-	fmt.Println(req)
-
 	var route *model.Route
 	var err error
 	err = con.RunTransaction(func(tx repository.Transaction) error {

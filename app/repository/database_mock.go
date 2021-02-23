@@ -48,9 +48,9 @@ func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
 }
 
-func (c *dbMockConnection) FindActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
+func (c *dbMockConnection) FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
 	for _, v := range mock.activityPrograms {
-		if v.UserID == ap.UserID && v.SeqNo == ap.SeqNo {
+		if v.UserID == userID && v.SeqNo == seqNo {
 			return v, nil
 		}
 	}

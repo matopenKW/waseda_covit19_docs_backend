@@ -73,7 +73,7 @@ func TestPutRoute_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
 		RouteID:     1,
@@ -104,7 +104,7 @@ func TestPutRoute_RegisterRoute(t *testing.T) {
 	mock := repository.NewDBMock()
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
 		RouteID:     1,
@@ -148,7 +148,7 @@ func TestPutRoute_UpdateRoute(t *testing.T) {
 
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
 		RouteID:     1,

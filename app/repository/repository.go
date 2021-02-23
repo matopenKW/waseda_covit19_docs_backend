@@ -9,7 +9,7 @@ type Repository interface {
 type Connection interface {
 	RunTransaction(f func(Transaction) error) error
 
-	FindActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
+	FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error)
 	FindActivityProgramMaxSeqNo(string) (model.ActivityProgramSeqNo, error)
 	ListActivityPrograms(string) ([]*model.ActivityProgram, error)
 	FindRoute(model.RouteID) (*model.Route, error)

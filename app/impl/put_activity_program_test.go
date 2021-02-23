@@ -78,7 +78,7 @@ func TestPutActivityProgramService_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutActivityProgramRequest{
 		Datetime:           "20200101",
@@ -142,7 +142,7 @@ func TestPutActivityProgramService_Create(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutActivityProgramRequest{
 		Datetime:           "20200101",

@@ -66,7 +66,7 @@ func TestDeleteRoute_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	rID := 1
 	impl := &DeleteRouteRequest{
@@ -95,7 +95,7 @@ func TestDeleteRoute_DeleteRoute(t *testing.T) {
 
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	rID := 1
 	impl := &DeleteRouteRequest{
