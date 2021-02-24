@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -30,6 +31,9 @@ func NewGoogleDriveRepository() GoogleDriveRepository {
 
 func (r *googleDriveRepository) GetClient() (GoogleDriveClient, error) {
 	sdk := os.Getenv("GOOGLE_DRIVE_API_TOKEN")
+	if sdk == "" {
+		return nil, fmt.Errorf("Not set google drive api token")
+	}
 	buf, err := base64.StdEncoding.DecodeString(sdk)
 	if err != nil {
 		return nil, err
