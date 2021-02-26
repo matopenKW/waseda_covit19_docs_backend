@@ -57,7 +57,6 @@ func GetImpl(pm string) (service.CmdServiceImpl, error) {
 	switch pm {
 	case "upload_histories_csv":
 		return service.NewUploadHistoriesCsvImpl()
-
 	default:
 		return nil, fmt.Errorf(fmt.Sprintf("not service pm=%s", pm))
 	}

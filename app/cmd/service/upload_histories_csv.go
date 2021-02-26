@@ -88,7 +88,6 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 
 	err = con.RunTransaction(func(tx repository.Transaction) error {
 		tx.UpdateLastUpload(&model.LastUpload{
-			WeekID:  int(weekDay),
 			DriveID: ret.DriveId,
 		})
 		return nil

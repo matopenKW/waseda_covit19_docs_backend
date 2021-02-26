@@ -177,9 +177,7 @@ func (t *dbMockTransaction) DeleteRoute(id model.RouteID) error {
 
 func (t *dbMockTransaction) UpdateLastUpload(m *model.LastUpload) error {
 	for _, v := range mock.lastUploads {
-		if v.WeekID == m.WeekID {
-			v.DriveID = m.DriveID
-		}
+		v.DriveID = m.DriveID
 	}
 	return nil
 }

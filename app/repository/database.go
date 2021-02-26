@@ -131,7 +131,7 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 
 func (c *dbConnection) LatestLastUpload() (*model.LastUpload, error) {
 	result := &model.LastUpload{}
-	err := c.db.Order("update_time DESC").Last(&result).Error
+	err := c.db.Last(&result).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}

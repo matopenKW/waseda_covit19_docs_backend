@@ -12,6 +12,15 @@ services:
     volumes:
       - ./:/go/src
     working_dir: /go/src
+  cmd:
+    build: ./local/cmd
+    container_name: local_cmd
+    env_file:
+      - .env
+    tty: true
+    volumes:
+      - ./:/go/src
+    working_dir: /go/src/app/cmd 
   db:
     build: ./local/db
     container_name: local_db
