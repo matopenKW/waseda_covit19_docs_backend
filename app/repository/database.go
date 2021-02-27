@@ -186,7 +186,7 @@ func (t *dbTransaction) DeleteRoute(id model.RouteID) error {
 }
 
 func (t *dbTransaction) UpdateLastUpload(m *model.LastUpload) error {
-	err := t.db.Update(m).Error
+	err := t.db.Model(&model.LastUpload{}).Update("drive_id", m.DriveID).Error
 	if err != nil {
 		return err
 	}

@@ -16,6 +16,7 @@ import (
 const (
 	ParentsPath     = "1_C0EVIK-WeK0WSMF1eIDOXLkE6UhnmNJ"
 	HistoryFileName = "history_%s.csv"
+	MasterDataID    = "1sJ7V19QDgN4o9BNrUpBE-G_MUYmoqiVZEWl7mmNyCRU"
 )
 
 type UploadHistoriesCsvImpl struct {
@@ -87,10 +88,21 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 	}
 
 	err = con.RunTransaction(func(tx repository.Transaction) error {
-		tx.UpdateLastUpload(&model.LastUpload{
-			DriveID: ret.DriveId,
+		err := tx.UpdateLastUpload(&model.LastUpload{
+			DriveID: ret.Id,
 		})
+		if err != nil {
+			return err
+		}
 		return nil
 	})
+	if err != nil {
+		return err
+	}
+
 	return nil
+}
+
+func createHistoryFile() {
+
 }
