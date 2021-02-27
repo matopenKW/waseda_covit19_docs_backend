@@ -23,6 +23,7 @@ type Connection interface {
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
 	LatestLastUpload() (*model.LastUpload, error)
+	ListUser() ([]*model.User, error)
 }
 
 type Transaction interface {
@@ -32,6 +33,7 @@ type Transaction interface {
 	CreateRoute(*model.Route) (*model.Route, error)
 	DeleteRoute(model.RouteID) error
 	UpdateLastUpload(*model.LastUpload) error
+	CreateUser(*model.User) error
 }
 
 type GoogleDriveRepository interface {
