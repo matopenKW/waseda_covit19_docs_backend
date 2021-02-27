@@ -57,7 +57,7 @@ go-test:
 	docker exec -it local_app /bin/sh -c "go test ./..."
 
 cmd-run:
-	docker build ./local/cmd/ -t local_cmd
-	docker run -v $(pwd):/go/src --env-file .env --rm -it --name local_cmd local_cmd
-	# docker exec -it local_cmd /bin/sh -c "sh setup.sh"
+	# docker build ./local/cmd/ -t local_cmd
+	# docker run -v $(pwd):/go/src --env-file .env --rm -it --name local_cmd local_cmd
+	docker-compose up -f ./docker-compose.cmd.yaml
 
