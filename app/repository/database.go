@@ -138,6 +138,15 @@ func (c *dbConnection) LatestLastUpload() (*model.LastUpload, error) {
 	return result, nil
 }
 
+func (c *dbConnection) ListUser() ([]*model.User, error) {
+	us := []*model.User{}
+	err := c.db.Find(us).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return us, nil
+}
+
 func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
 	result := t.db.Create(p)
 	if result.Error != nil {
@@ -187,6 +196,15 @@ func (t *dbTransaction) DeleteRoute(id model.RouteID) error {
 
 func (t *dbTransaction) UpdateLastUpload(m *model.LastUpload) error {
 	err := t.db.Model(&model.LastUpload{}).Update("drive_id", m.DriveID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *dbTransaction) CreateUser(u *model.User) error {
+	err := t.db.Create(u).Error
 	if err != nil {
 		return err
 	}

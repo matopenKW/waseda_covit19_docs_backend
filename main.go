@@ -23,6 +23,7 @@ var serviceImpl struct {
 	putRouteService           impl.PutRouteService
 	deleteRouteService        impl.DeleteRouteService
 	getHistories              impl.GetHistoriesService
+	putUsers                  impl.PutUserService
 }
 
 func init() {
@@ -54,6 +55,7 @@ func main() {
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
+	r.PUT("/api/v1/put_user", appHandler(&serviceImpl.putUsers))
 
 	r.Run()
 }
