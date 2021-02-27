@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -12,6 +13,12 @@ import (
 	"golang.org/x/oauth2"
 	"google.golang.org/api/drive/v3"
 )
+
+// Client is Google Drive Client
+type Client struct {
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+}
 
 type googleDriveRepository struct{}
 
@@ -30,6 +37,9 @@ func NewGoogleDriveRepository() GoogleDriveRepository {
 
 func (r *googleDriveRepository) GetClient() (GoogleDriveClient, error) {
 	sdk := os.Getenv("GOOGLE_DRIVE_API_TOKEN")
+	if sdk == "" {
+		return nil, fmt.Errorf("Not set google drive api token")
+	}
 	buf, err := base64.StdEncoding.DecodeString(sdk)
 	if err != nil {
 		return nil, err
@@ -41,9 +51,36 @@ func (r *googleDriveRepository) GetClient() (GoogleDriveClient, error) {
 		return nil, err
 	}
 
-	config := &oauth2.Config{}
+	cliJSON := os.Getenv("GOOGLE_DRIVE_API_CLIENT")
+	if cliJSON == "" {
+		return nil, fmt.Errorf("Not set google drive api client")
+	}
+	buf, err = base64.StdEncoding.DecodeString(cliJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	cli := &Client{}
+	err = json.NewDecoder(bytes.NewReader(buf)).Decode(cli)
+	if err != nil {
+		return nil, err
+	}
+
+	authConfig := &oauth2.Config{
+		ClientID:     cli.ClientID,
+		ClientSecret: cli.ClientSecret,
+		Endpoint: oauth2.Endpoint{
+			TokenURL: "https://www.googleapis.com/oauth2/v4/token",
+		},
+	}
+	tks := authConfig.TokenSource(context.Background(), tok)
+	newToken, err := tks.Token()
+	if err != nil {
+		return nil, err
+	}
+
 	return &googleDriveClient{
-		Client: config.Client(context.Background(), tok),
+		Client: authConfig.Client(context.Background(), newToken),
 	}, nil
 }
 

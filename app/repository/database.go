@@ -129,6 +129,15 @@ func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.Act
 	return ps, nil
 }
 
+func (c *dbConnection) LatestLastUpload() (*model.LastUpload, error) {
+	result := &model.LastUpload{}
+	err := c.db.Last(&result).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
 	result := t.db.Create(p)
 	if result.Error != nil {
@@ -169,6 +178,15 @@ func (t *dbTransaction) DeleteRoute(id model.RouteID) error {
 	err := t.db.Delete(&model.Route{
 		ID: id,
 	}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *dbTransaction) UpdateLastUpload(m *model.LastUpload) error {
+	err := t.db.Model(&model.LastUpload{}).Update("drive_id", m.DriveID).Error
 	if err != nil {
 		return err
 	}

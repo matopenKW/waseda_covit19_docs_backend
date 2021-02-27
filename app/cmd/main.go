@@ -4,38 +4,60 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
-	"github.com/matopenKW/waseda_covit19_docs_backend/app/cmd/upload"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/cmd/service"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
 func main() {
 	flag.Parse()
-	exec(flag.Args())
+	if err := exec(flag.Args()); err != nil {
+		log.Println(err.Error())
+		panic("error")
+	}
+	log.Println("Succsess")
 }
 
-func exec(args []string) {
+func exec(args []string) error {
 	if len(args) == 0 {
-		panic("not args")
+		return fmt.Errorf("not args")
 	}
 
-	db, err := gorm.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := repository.NewDbConnection()
 	if err != nil {
-		panic(fmt.Sprintf("db error; %s", err.Error()))
+		return fmt.Errorf("db error; %s", err.Error())
 	}
 	defer db.Close()
 
-	switch args[0] {
-	case "upload_histories_csv":
-		err = upload.UploadHistoriesCsv(db, args[1:]...)
-	}
-
+	srv, err := GetImpl(args[0])
 	if err != nil {
-		panic(err.Error())
+		return err
 	}
 
-	log.Println("Succsess")
+	err = srv.SetParam(args[1:])
+	if err != nil {
+		return err
+	}
+
+	err = srv.Validate()
+	if err != nil {
+		return err
+	}
+
+	err = srv.Execute()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetImpl(pm string) (service.CmdServiceImpl, error) {
+	switch pm {
+	case "upload_histories_csv":
+		return service.NewUploadHistoriesCsvImpl()
+	default:
+		return nil, fmt.Errorf(fmt.Sprintf("not service pm=%s", pm))
+	}
 }

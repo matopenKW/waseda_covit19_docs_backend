@@ -61,5 +61,6 @@ $ make create-table sqlname=<sql file name>.sql"
 9. Get google drive api token!
 10. Please set base64 encode token to env
 ```
-$ export GOOGLE_DRIVE_API_TOKEN=$(cat token.json | base64) 
+$ echo GOOGLE_DRIVE_API_TOKEN=$(cat ./app/cmd/token.json | base64) >> .env
+$ echo GOOGLE_DRIVE_API_CLIENT=$(cat ./app/cmd/client.json | base64) >> .env 
 ```

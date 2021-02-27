@@ -22,6 +22,7 @@ type Connection interface {
 	FindMaxRouteID() (model.RouteID, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
+	LatestLastUpload() (*model.LastUpload, error)
 }
 
 type Transaction interface {
@@ -30,6 +31,7 @@ type Transaction interface {
 	UpdateRoute(*model.Route) (*model.Route, error)
 	CreateRoute(*model.Route) (*model.Route, error)
 	DeleteRoute(model.RouteID) error
+	UpdateLastUpload(*model.LastUpload) error
 }
 
 type GoogleDriveRepository interface {
