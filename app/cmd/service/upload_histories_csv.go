@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -72,7 +71,8 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 	}
 
 	// TODO　一時的にテキストを取得
-	buf, _ := ioutil.ReadFile("test.csv")
+	//	buf, _ := ioutil.ReadFile("test.csv")
+	buf := createHistoryFile()
 	r := bytes.NewReader(buf)
 
 	weekDay := time.Now().Weekday()
@@ -103,6 +103,12 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 	return nil
 }
 
-func createHistoryFile() {
+func createHistoryFile() []byte {
+	testData := []string{"1", "1", "1", "1", "1"}
 
+	var csv string
+	for _, s := range testData {
+		csv += s + ","
+	}
+	return []byte(csv)
 }
