@@ -6,6 +6,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/jinzhu/gorm"
 	"google.golang.org/api/drive/v3"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -23,13 +24,7 @@ type UploadHistoriesCsvImpl struct {
 	gdRepo repository.GoogleDriveRepository
 }
 
-func NewUploadHistoriesCsvImpl() (*UploadHistoriesCsvImpl, error) {
-	db, err := repository.NewDbConnection()
-	if err != nil {
-		return nil, err
-	}
-	db.LogMode(true)
-
+func NewUploadHistoriesCsvImpl(db *gorm.DB) (*UploadHistoriesCsvImpl, error) {
 	return &UploadHistoriesCsvImpl{
 		dbRepo: repository.NewDbRepository(db),
 		gdRepo: repository.NewGoogleDriveRepository(),
@@ -72,7 +67,10 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 
 	// TODO　一時的にテキストを取得
 	//	buf, _ := ioutil.ReadFile("test.csv")
-	buf := createHistoryFile()
+	buf, err := createHistoryFile()
+	if err != nil {
+		return err
+	}
 	r := bytes.NewReader(buf)
 
 	weekDay := time.Now().Weekday()
@@ -103,12 +101,19 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 	return nil
 }
 
-func createHistoryFile() []byte {
+func createHistoryFile() ([]byte, error) {
+
+	// file, err := srv.Files.Get("1sJ7V19QDgN4o9BNrUpBE-G_MUYmoqiVZEWl7mmNyCRU").Do()
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// log.Println(file)
+
 	testData := []string{"1", "1", "1", "1", "1"}
 
 	var csv string
 	for _, s := range testData {
 		csv += s + ","
 	}
-	return []byte(csv)
+	return []byte(csv), nil
 }
