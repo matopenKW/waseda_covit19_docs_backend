@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/cmd/service"
@@ -29,9 +30,10 @@ func exec(args []string) error {
 	if err != nil {
 		return fmt.Errorf("db error; %s", err.Error())
 	}
+	db.LogMode(true)
 	defer db.Close()
 
-	srv, err := GetImpl(args[0])
+	srv, err := GetImpl(db, args[0])
 	if err != nil {
 		return err
 	}
@@ -53,10 +55,10 @@ func exec(args []string) error {
 	return nil
 }
 
-func GetImpl(pm string) (service.CmdServiceImpl, error) {
+func GetImpl(db *gorm.DB, pm string) (service.CmdServiceImpl, error) {
 	switch pm {
 	case "upload_histories_csv":
-		return service.NewUploadHistoriesCsvImpl()
+		return service.NewUploadHistoriesCsvImpl(db)
 	default:
 		return nil, fmt.Errorf(fmt.Sprintf("not service pm=%s", pm))
 	}

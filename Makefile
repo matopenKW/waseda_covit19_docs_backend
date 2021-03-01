@@ -59,5 +59,5 @@ go-test:
 cmd-run:
 	# docker build ./local/cmd/ -t local_cmd
 	# docker run -v $(pwd):/go/src --env-file .env --rm -it --name local_cmd local_cmd
-	docker-compose up -f ./docker-compose.cmd.yaml
+	docker-compose -f ./docker-compose.cmd.yaml up
 
