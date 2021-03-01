@@ -80,6 +80,6 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Execute is fatal. got=%#v, want=%#v, diff=%s", impl, want, cmp.Diff(impl, want))
+		t.Errorf("Execute is fatal. got=%#v, want=%#v, diff=%s", got, want, cmp.Diff(got, want))
 	}
 }

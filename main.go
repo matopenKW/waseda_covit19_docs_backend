@@ -11,7 +11,6 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
@@ -28,6 +27,7 @@ var serviceImpl struct {
 	putRouteService           impl.PutRouteService
 	deleteRouteService        impl.DeleteRouteService
 	getHistories              impl.GetHistoriesService
+	putUsers                  impl.PutUserService
 }
 
 func init() {
@@ -63,6 +63,7 @@ func main() {
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
+	r.PUT("/api/v1/put_user", appHandler(&serviceImpl.putUsers))
 
 	r.Run()
 }
@@ -72,14 +73,13 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		req := s.New()
 
 		// dbConnection
-		db, err := dbConnection()
-		defer db.Close()
+		db, err := repository.NewDbConnection()
 		if err != nil {
 			log.Println(err)
 			errorHandring("db connections error", ctx)
 			return
 		}
-		db.LogMode(true)
+		defer db.Close()
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
@@ -93,6 +93,7 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		if os.Getenv("ENV") != "prd" {
 			token, err = authDev(ctx)
 		} else {
+			db.LogMode(true)
 			token, err = authJWT(ctx)
 		}
 		if err != nil {
@@ -119,10 +120,6 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 
 		ctx.JSON(http.StatusOK, res)
 	}
-}
-
-func dbConnection() (*gorm.DB, error) {
-	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 }
 
 func errorHandring(message string, ctx *gin.Context) {

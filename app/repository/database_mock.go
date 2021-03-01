@@ -11,6 +11,8 @@ var mock dbMock
 type dbMock struct {
 	activityPrograms []*model.ActivityProgram
 	routes           []*model.Route
+	lastUploads      []*model.LastUpload
+	users            []*model.User
 }
 
 func NewDBMock() *dbMock {
@@ -23,6 +25,10 @@ func (m *dbMock) SetActivityPrograms(aps []*model.ActivityProgram) {
 
 func (m *dbMock) SetRoutes(rs []*model.Route) {
 	m.routes = rs
+}
+
+func (m *dbMock) SetUsers(us []*model.User) {
+	m.users = us
 }
 
 type dbMockRepository struct {
@@ -104,6 +110,17 @@ func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model
 	return nil, nil
 }
 
+func (c *dbMockConnection) LatestLastUpload() (*model.LastUpload, error) {
+	if len(mock.lastUploads) != 0 {
+		return mock.lastUploads[len(mock.lastUploads)-1], nil
+	}
+	return nil, nil
+}
+
+func (c *dbMockConnection) ListUser() ([]*model.User, error) {
+	return mock.users, nil
+}
+
 func (t *dbMockTransaction) CreateActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {
 	for _, v := range mock.activityPrograms {
 		if v.UserID == ap.UserID && v.SeqNo == ap.SeqNo {
@@ -164,5 +181,23 @@ func (t *dbMockTransaction) DeleteRoute(id model.RouteID) error {
 	}
 
 	mock.routes = rs
+	return nil
+}
+
+func (t *dbMockTransaction) UpdateLastUpload(m *model.LastUpload) error {
+	for _, v := range mock.lastUploads {
+		v.DriveID = m.DriveID
+	}
+	return nil
+}
+
+func (t *dbMockTransaction) CreateUser(u *model.User) error {
+	for _, m := range mock.users {
+		if m.ID == u.ID {
+			return fmt.Errorf("conflict")
+		}
+	}
+
+	mock.users = append(mock.users, u)
 	return nil
 }
