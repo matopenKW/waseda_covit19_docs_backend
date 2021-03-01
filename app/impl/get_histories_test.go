@@ -71,7 +71,7 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &GetHistoriesRequest{}
 	got, err := impl.Execute(implCtx)

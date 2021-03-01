@@ -14,10 +14,14 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+var master *impl.Master
+
 var serviceImpl struct {
+	getActivityProgramService impl.GetActivityProgramService
 	putActivityProgramService impl.PutActivityProgramService
 	getRoutesService          impl.GetRoutesService
 	putRouteService           impl.PutRouteService
@@ -33,6 +37,9 @@ func init() {
 	if os.Getenv("FRONT_URL") == "" {
 		panic("init error. front url env is brank")
 	}
+
+	// set master data
+	master = setMasterData()
 }
 
 func main() {
@@ -50,6 +57,7 @@ func main() {
 		"Authorization"}
 	r.Use(cors.New(config))
 
+	r.GET("/api/v1/get_activity_program/:seq_no", appHandler(&serviceImpl.getActivityProgramService))
 	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
 	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
@@ -102,7 +110,7 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 			return
 		}
 
-		implCtx := impl.NewContext(token.UID, con)
+		implCtx := impl.NewContext(token.UID, con, master)
 		res, err := req.Execute(implCtx)
 		if err != nil {
 			log.Println(err)
@@ -143,4 +151,26 @@ func authDev(ctx *gin.Context) (*auth.Token, error) {
 	return &auth.Token{
 		UID: "user_id",
 	}, nil
+}
+
+func setMasterData() *impl.Master {
+	practices := []*model.Practice{
+		{ID: 1, Name: "レギュラー"},
+		{ID: 2, Name: "卒演"},
+		{ID: 3, Name: "新練"},
+	}
+
+	activities := []*model.Activity{
+		{ID: 1, Name: "tutti"},
+		{ID: 2, Name: "弦練"},
+		{ID: 3, Name: "管打練"},
+		{ID: 4, Name: "パート練"},
+		{ID: 5, Name: "木管練"},
+		{ID: 6, Name: "金管練"},
+		{ID: 7, Name: "トップ練"},
+		{ID: 8, Name: "引き継ぎ"},
+		{ID: 9, Name: "アンサンブル"},
+	}
+
+	return impl.NewMaster(practices, activities)
 }
