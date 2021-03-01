@@ -83,7 +83,7 @@ func TestPutUser_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutUserRequest{
 		UID:   "TEST_UID",
@@ -108,7 +108,7 @@ func TestPutUser_CreateUser(t *testing.T) {
 	mock := repository.NewDBMock()
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutUserRequest{
 		UID:   "TEST_USER_ID",
@@ -137,7 +137,7 @@ func TestPutUser_CreateUser_Fail(t *testing.T) {
 	})
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutUserRequest{
 		UID:   "TEST_USER_ID",
