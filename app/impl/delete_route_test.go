@@ -17,7 +17,7 @@ func TestDeleteRoute_SetRequest(t *testing.T) {
 		SeqNo: &seq,
 	}
 
-	bs := []byte(`{"UserID":"test_user_id","SeqNo":1}`)
+	bs := []byte(`{"seq_no":1}`)
 	req, _ := http.NewRequest("GET", "/api/v1/delete_put", bytes.NewBuffer(bs))
 
 	var ctx *gin.Context
