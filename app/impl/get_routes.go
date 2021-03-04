@@ -1,9 +1,6 @@
 package impl
 
 import (
-	"fmt"
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
@@ -31,7 +28,7 @@ func (r *GetRoutesRequest) Execute(ctx *Context) (ResponceImpl, error) {
 }
 
 type GetRoutesResponce struct {
-	Routes *model.Route
+	Routes []*model.Route
 }
 
 func (r *GetRoutesResponce) GetResponce() {
@@ -40,15 +37,9 @@ func (r *GetRoutesResponce) GetResponce() {
 func GetRoutes(req *GetRoutesRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
-	rs, err := con.FindRoute(ctx.userID, model.RouteSeqNo(req.SeqNo))
+	rs, err := con.FindRoutesByUserID(ctx.GetUserID())
 	if err != nil {
 		return nil, err
-	}
-
-	if rs == nil {
-		return &GetRoutesResponce{
-			Routes: nil,
-		}, nil
 	}
 
 	return &GetRoutesResponce{
