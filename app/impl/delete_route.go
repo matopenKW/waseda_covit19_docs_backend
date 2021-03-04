@@ -19,7 +19,7 @@ func (s *DeleteRouteService) New() RequestImpl {
 
 // DeleteRouteRequest is delete route request
 type DeleteRouteRequest struct {
-	RouteID *int `json:"route_id,omitempty"`
+	SeqNo int `json:"seq_no"`
 }
 
 // SetRequest is request set receiver
@@ -30,8 +30,8 @@ func (r *DeleteRouteRequest) SetRequest(ctx *gin.Context) {
 // Validate is validate receiver
 func (r *DeleteRouteRequest) Validate() error {
 	log.Println(r)
-	if r.RouteID == nil {
-		return fmt.Errorf("Invalid route id")
+	if r.SeqNo == 0 {
+		return fmt.Errorf("Invalid seq no")
 	}
 	return nil
 }

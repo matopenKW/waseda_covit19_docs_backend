@@ -18,8 +18,8 @@ type Connection interface {
 	FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error)
 	FindActivityProgramMaxSeqNo(string) (model.ActivityProgramSeqNo, error)
 	ListActivityPrograms(string) ([]*model.ActivityProgram, error)
-	FindRoute(model.RouteID) (*model.Route, error)
-	FindMaxRouteID() (model.RouteID, error)
+	FindRoute(userID string, seqNo model.RouteSeqNo) (*model.Route, error)
+	FindRouteMaxSeqNo(string) (model.RouteSeqNo, error)
 	FindRoutesByUserID(string) ([]*model.Route, error)
 	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
 	LatestLastUpload() (*model.LastUpload, error)
@@ -31,7 +31,7 @@ type Transaction interface {
 	SaveRoute(*model.Route) (*model.Route, error)
 	UpdateRoute(*model.Route) (*model.Route, error)
 	CreateRoute(*model.Route) (*model.Route, error)
-	DeleteRoute(model.RouteID) error
+	DeleteRoute(userID string, seqNo model.RouteSeqNo) error
 	UpdateLastUpload(*model.LastUpload) error
 	CreateUser(*model.User) error
 }
