@@ -30,7 +30,7 @@ func (r *DeleteRouteRequest) SetRequest(ctx *gin.Context) {
 // Validate is validate receiver
 func (r *DeleteRouteRequest) Validate() error {
 	log.Println(r)
-	if r.SeqNo == 0 {
+	if r.SeqNo == nil {
 		return fmt.Errorf("Invalid seq no")
 	}
 	return nil
