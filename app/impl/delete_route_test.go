@@ -12,12 +12,12 @@ import (
 )
 
 func TestDeleteRoute_SetRequest(t *testing.T) {
-	rID := 1
+	seq := 1
 	want := &DeleteRouteRequest{
-		RouteID: &rID,
+		SeqNo: &seq,
 	}
 
-	bs := []byte(`{"route_id":1}`)
+	bs := []byte(`{"UserID":"test_user_id","SeqNo":1}`)
 	req, _ := http.NewRequest("GET", "/api/v1/delete_put", bytes.NewBuffer(bs))
 
 	var ctx *gin.Context
@@ -36,7 +36,7 @@ func TestDeleteRoute_SetRequest(t *testing.T) {
 func TestDeleteRoute_Validate(t *testing.T) {
 	rID := 1
 	impl := &DeleteRouteRequest{
-		RouteID: &rID,
+		SeqNo: &rID,
 	}
 	err := impl.Validate()
 	if err != nil {
@@ -58,7 +58,6 @@ func TestDeleteRoute_Execute(t *testing.T) {
 	mock := repository.NewDBMock()
 	mock.SetRoutes([]*model.Route{
 		{
-			ID:     1,
 			UserID: "test_user_id",
 			Name:   "test_route_name",
 		},
@@ -70,7 +69,7 @@ func TestDeleteRoute_Execute(t *testing.T) {
 
 	rID := 1
 	impl := &DeleteRouteRequest{
-		RouteID: &rID,
+		SeqNo: &rID,
 	}
 	got, err := impl.Execute(implCtx)
 	if err != nil {
@@ -83,11 +82,12 @@ func TestDeleteRoute_Execute(t *testing.T) {
 }
 
 func TestDeleteRoute_DeleteRoute(t *testing.T) {
-	testRouteID := model.RouteID(1)
+	testRouteUserID := "test_user_id"
+	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	mock.SetRoutes([]*model.Route{
 		{
-			ID:     testRouteID,
+			SeqNo:  testRouteSeqNo,
 			UserID: "test_user_id",
 			Name:   "test_route_name",
 		},
@@ -99,14 +99,14 @@ func TestDeleteRoute_DeleteRoute(t *testing.T) {
 
 	rID := 1
 	impl := &DeleteRouteRequest{
-		RouteID: &rID,
+		SeqNo: &rID,
 	}
 	_, err := impl.Execute(implCtx)
 	if err != nil {
 		t.Fatalf("Is error %#v", err)
 	}
 
-	got, err := con.FindRoute(testRouteID)
+	got, err := con.FindRoute(testRouteUserID, testRouteSeqNo)
 	if err != nil {
 		t.Fatalf("Is error %#v", err)
 	}
