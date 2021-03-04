@@ -17,7 +17,6 @@ func (s *GetRoutesService) New() RequestImpl {
 }
 
 type GetRoutesRequest struct {
-	SeqNo int `json:"seq_no"`
 }
 
 func (r *GetRoutesRequest) SetRequest(ctx *gin.Context) {
