@@ -19,7 +19,7 @@ func (s *DeleteRouteService) New() RequestImpl {
 
 // DeleteRouteRequest is delete route request
 type DeleteRouteRequest struct {
-	SeqNo int `json:"seq_no"`
+	SeqNo *int `json:"seq_no, omitempty"`
 }
 
 // SetRequest is request set receiver
