@@ -20,7 +20,6 @@ type GetRoutesRequest struct {
 }
 
 func (r *GetRoutesRequest) SetRequest(ctx *gin.Context) {
-	r.SeqNo, _ = strconv.Atoi(ctx.Param("seq_no"))
 }
 
 func (r *GetRoutesRequest) Validate() error {
