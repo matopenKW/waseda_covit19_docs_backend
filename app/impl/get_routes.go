@@ -23,9 +23,6 @@ func (r *GetRoutesRequest) SetRequest(ctx *gin.Context) {
 }
 
 func (r *GetRoutesRequest) Validate() error {
-	if r.SeqNo == 0 {
-		return fmt.Errorf("Invalid seq no")
-	}
 	return nil
 }
 
