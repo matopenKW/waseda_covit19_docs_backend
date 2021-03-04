@@ -53,7 +53,7 @@ func (r *DeleteRouteResponce) GetResponce() {
 func deleteRoute(req *DeleteRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 	err := con.RunTransaction(func(tx repository.Transaction) error {
-		err := tx.DeleteRoute(ctx.userID, model.RouteSeqNo(req.SeqNo))
+		err := tx.DeleteRoute(ctx.userID, model.RouteSeqNo(*req.SeqNo))
 		if err != nil {
 			return err
 		}
