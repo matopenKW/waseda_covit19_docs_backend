@@ -101,7 +101,7 @@ func (c *dbConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.
 
 func (c *dbConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error) {
 	r := &model.Route{}
-	err := c.db.Limit(1).Order("seq_no DESC").Where("user_id = ?", userID).Find(r).Error
+	err := c.db.Order("seq_no DESC").Last(r).Where("user_id = ?", userID).Find(r).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, err
 	}
