@@ -1,10 +1,10 @@
 package model
 
-type RouteID int64
+type RouteSeqNo int64
 
 type Route struct {
-	ID          RouteID `gorm:"primaryKey"`
-	UserID      string
+	UserID      UserID     `gorm:"primaryKey"`
+	SeqNo       RouteSeqNo `gorm:"primaryKey"`
 	Name        string
 	OutwardTrip string
 	ReturnTrip  string

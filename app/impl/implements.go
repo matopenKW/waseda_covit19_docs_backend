@@ -2,19 +2,33 @@ package impl
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+type Master struct {
+	practices  []*model.Practice
+	activities []*model.Activity
+}
+
+func NewMaster(practices []*model.Practice, activities []*model.Activity) *Master {
+	return &Master{
+		practices:  practices,
+		activities: activities,
+	}
+}
+
 type Context struct {
-	userID     string
+	userID     model.UserID
 	connection repository.Connection
+	master     *Master
 }
 
-func NewContext(userID string, con repository.Connection) *Context {
-	return &Context{userID, con}
+func NewContext(userID model.UserID, con repository.Connection, master *Master) *Context {
+	return &Context{userID, con, master}
 }
 
-func (c *Context) GetUserID() string {
+func (c *Context) GetUserID() model.UserID {
 	return c.userID
 }
 

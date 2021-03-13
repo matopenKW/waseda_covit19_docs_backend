@@ -2,7 +2,6 @@ package impl
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -19,7 +18,7 @@ func (s *DeleteRouteService) New() RequestImpl {
 
 // DeleteRouteRequest is delete route request
 type DeleteRouteRequest struct {
-	RouteID *int `json:"route_id,omitempty"`
+	SeqNo *int `json:"seq_no, omitempty"`
 }
 
 // SetRequest is request set receiver
@@ -29,9 +28,8 @@ func (r *DeleteRouteRequest) SetRequest(ctx *gin.Context) {
 
 // Validate is validate receiver
 func (r *DeleteRouteRequest) Validate() error {
-	log.Println(r)
-	if r.RouteID == nil {
-		return fmt.Errorf("Invalid route id")
+	if r.SeqNo == nil {
+		return fmt.Errorf("Invalid seq no")
 	}
 	return nil
 }
@@ -53,7 +51,7 @@ func (r *DeleteRouteResponce) GetResponce() {
 func deleteRoute(req *DeleteRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 	err := con.RunTransaction(func(tx repository.Transaction) error {
-		err := tx.DeleteRoute(model.RouteID(*req.RouteID))
+		err := tx.DeleteRoute(ctx.userID, model.RouteSeqNo(*req.SeqNo))
 		if err != nil {
 			return err
 		}

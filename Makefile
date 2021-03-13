@@ -9,7 +9,6 @@ db-run:
 
 server-run:
 	docker-compose up -d app
-	docker exec -it local_app /bin/sh -c "go run main.go"
 
 migrate-up:
 	docker-compose up -d migrate
@@ -40,6 +39,7 @@ endif
 run:
 	make db-run
 	make server-run
+	docker exec -it local_app /bin/sh -c "go run main.go"
 
 stop:
 	docker-compose stop
@@ -55,3 +55,9 @@ endif
 go-test:
 	docker-compose up -d app
 	docker exec -it local_app /bin/sh -c "go test ./..."
+
+cmd-run:
+	# docker build ./local/cmd/ -t local_cmd
+	# docker run -v $(pwd):/go/src --env-file .env --rm -it --name local_cmd local_cmd
+	docker-compose -f ./docker-compose.cmd.yaml up
+

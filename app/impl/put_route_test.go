@@ -13,14 +13,12 @@ import (
 
 func TestPutRoute_SetRequest(t *testing.T) {
 	want := &PutRouteRequest{
-		RouteID:     1,
 		Name:        "test_name",
 		OutwardTrip: "test_outward_trip",
 		ReturnTrip:  "test_return_trip",
 	}
 
 	bs := []byte(`{
-		"route_id": 1,
 		"name": "test_name", 
 		"outward_trip": "test_outward_trip",
 		"return_trip": "test_return_trip"
@@ -62,8 +60,8 @@ func TestPutRoute_Validate_Fail(t *testing.T) {
 func TestPutRoute_Execute(t *testing.T) {
 	want := &PutRouteResponce{
 		Route: &model.Route{
-			ID:          1,
 			UserID:      "test_user_id",
+			SeqNo:       1,
 			Name:        "test_route_name",
 			OutwardTrip: "test_outward_trip",
 			ReturnTrip:  "test_return_trip",
@@ -73,10 +71,9 @@ func TestPutRoute_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
-		RouteID:     1,
 		Name:        "test_route_name",
 		OutwardTrip: "test_outward_trip",
 		ReturnTrip:  "test_return_trip",
@@ -93,21 +90,21 @@ func TestPutRoute_Execute(t *testing.T) {
 
 func TestPutRoute_RegisterRoute(t *testing.T) {
 	want := &model.Route{
-		ID:          1,
 		UserID:      "test_user_id",
+		SeqNo:       1,
 		Name:        "test_route_name",
 		OutwardTrip: "test_outward_trip",
 		ReturnTrip:  "test_return_trip",
 	}
 
-	testRouteID := model.RouteID(1)
+	testRouteUserID := model.UserID("test_user_id")
+	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
-		RouteID:     1,
 		Name:        "test_route_name",
 		OutwardTrip: "test_outward_trip",
 		ReturnTrip:  "test_return_trip",
@@ -117,7 +114,7 @@ func TestPutRoute_RegisterRoute(t *testing.T) {
 		t.Fatalf("Is error %#v", err)
 	}
 
-	got, err := con.FindRoute(testRouteID)
+	got, err := con.FindRoute(testRouteUserID, testRouteSeqNo)
 	if err != nil {
 		t.Fatalf("Is error %#v", err)
 	}
@@ -128,18 +125,18 @@ func TestPutRoute_RegisterRoute(t *testing.T) {
 
 func TestPutRoute_UpdateRoute(t *testing.T) {
 	want := &model.Route{
-		ID:          1,
 		UserID:      "test_user_id",
+		SeqNo:       1,
 		Name:        "test_update_route_name",
 		OutwardTrip: "test_update_outward_trip",
 		ReturnTrip:  "test_update_return_trip",
 	}
 
-	testRouteID := model.RouteID(1)
+	testRouteUserID := model.UserID("test_user_id")
+	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	mock.SetRoutes([]*model.Route{
 		{
-			ID:          testRouteID,
 			Name:        "test_name",
 			OutwardTrip: "test_outward_trip",
 			ReturnTrip:  "test_return_trip",
@@ -148,10 +145,9 @@ func TestPutRoute_UpdateRoute(t *testing.T) {
 
 	repo := repository.NewMockDbRepository(mock)
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &PutRouteRequest{
-		RouteID:     1,
 		Name:        "test_update_route_name",
 		OutwardTrip: "test_update_outward_trip",
 		ReturnTrip:  "test_update_return_trip",
@@ -161,7 +157,7 @@ func TestPutRoute_UpdateRoute(t *testing.T) {
 		t.Fatalf("Is error %#v", err)
 	}
 
-	got, err := con.FindRoute(testRouteID)
+	got, err := con.FindRoute(testRouteUserID, testRouteSeqNo)
 	if err != nil {
 		t.Fatalf("Is error %#v", err)
 	}

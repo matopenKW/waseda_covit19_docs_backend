@@ -11,19 +11,25 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
+var master *impl.Master
+
 var serviceImpl struct {
+	getActivityProgramService impl.GetActivityProgramService
 	putActivityProgramService impl.PutActivityProgramService
 	getRoutesService          impl.GetRoutesService
 	putRouteService           impl.PutRouteService
 	deleteRouteService        impl.DeleteRouteService
 	getHistories              impl.GetHistoriesService
+	updateUsers               impl.UpdateUserService
+	createUser                impl.CreateUserService
+	getUser                   impl.GetUserService
 }
 
 func init() {
@@ -33,6 +39,9 @@ func init() {
 	if os.Getenv("FRONT_URL") == "" {
 		panic("init error. front url env is brank")
 	}
+
+	// set master data
+	master = setMasterData()
 }
 
 func main() {
@@ -40,7 +49,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
-	config.AllowMethods = []string{"GET", "PUT", "DELETE"}
+	config.AllowMethods = []string{"POST", "GET", "PUT", "DELETE"}
 	config.AllowHeaders = []string{
 		"Access-Control-Allow-Headers",
 		"Content-Type",
@@ -50,11 +59,15 @@ func main() {
 		"Authorization"}
 	r.Use(cors.New(config))
 
+	r.GET("/api/v1/get_activity_program/:seq_no", appHandler(&serviceImpl.getActivityProgramService))
 	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
 	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
+	r.PUT("/api/v1/update_user", appHandler(&serviceImpl.updateUsers))
+	r.POST("/api/v1/create_user", appHandler((&serviceImpl.createUser)))
+	r.GET("/api/v1/get_user", appHandler((&serviceImpl.getUser)))
 
 	r.Run()
 }
@@ -64,14 +77,13 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		req := s.New()
 
 		// dbConnection
-		db, err := dbConnection()
-		defer db.Close()
+		db, err := repository.NewDbConnection()
 		if err != nil {
 			log.Println(err)
 			errorHandring("db connections error", ctx)
 			return
 		}
-		db.LogMode(true)
+		defer db.Close()
 
 		repo := repository.NewDbRepository(db)
 		con, err := repo.NewConnection()
@@ -85,6 +97,7 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		if os.Getenv("ENV") != "prd" {
 			token, err = authDev(ctx)
 		} else {
+			db.LogMode(true)
 			token, err = authJWT(ctx)
 		}
 		if err != nil {
@@ -97,24 +110,20 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		err = req.Validate()
 		if err != nil {
 			log.Println(err)
-			errorHandring("servr ereror", ctx)
+			errorHandring("servr error", ctx)
 			return
 		}
 
-		implCtx := impl.NewContext(token.UID, con)
+		implCtx := impl.NewContext(model.UserID(token.UID), con, master)
 		res, err := req.Execute(implCtx)
 		if err != nil {
 			log.Println(err)
-			errorHandring("servr ereror", ctx)
+			errorHandring("servr error", ctx)
 			return
 		}
 
 		ctx.JSON(http.StatusOK, res)
 	}
-}
-
-func dbConnection() (*gorm.DB, error) {
-	return gorm.Open("postgres", os.Getenv("DATABASE_URL"))
 }
 
 func errorHandring(message string, ctx *gin.Context) {
@@ -146,4 +155,26 @@ func authDev(ctx *gin.Context) (*auth.Token, error) {
 	return &auth.Token{
 		UID: "user_id",
 	}, nil
+}
+
+func setMasterData() *impl.Master {
+	practices := []*model.Practice{
+		{ID: 1, Name: "レギュラー"},
+		{ID: 2, Name: "卒演"},
+		{ID: 3, Name: "新練"},
+	}
+
+	activities := []*model.Activity{
+		{ID: 1, Name: "tutti"},
+		{ID: 2, Name: "弦練"},
+		{ID: 3, Name: "管打練"},
+		{ID: 4, Name: "パート練"},
+		{ID: 5, Name: "木管練"},
+		{ID: 6, Name: "金管練"},
+		{ID: 7, Name: "トップ練"},
+		{ID: 8, Name: "引き継ぎ"},
+		{ID: 9, Name: "アンサンブル"},
+	}
+
+	return impl.NewMaster(practices, activities)
 }

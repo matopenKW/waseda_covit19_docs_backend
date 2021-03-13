@@ -1,0 +1,12 @@
+version: '3'
+services:
+  cmd:
+    build: ./local/cmd
+    container_name: local_cmd
+    env_file:
+      - .env
+    tty: true
+    volumes:
+      - ./:/go/src
+    working_dir: /go/src/app/cmd
+

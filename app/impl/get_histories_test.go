@@ -71,7 +71,7 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 	repo := repository.NewMockDbRepository(mock)
 
 	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con)
+	implCtx := NewContext("test_user_id", con, nil)
 
 	impl := &GetHistoriesRequest{}
 	got, err := impl.Execute(implCtx)
@@ -80,6 +80,6 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 	}
 
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Execute is fatal. got=%#v, want=%#v, diff=%s", impl, want, cmp.Diff(impl, want))
+		t.Errorf("Execute is fatal. got=%#v, want=%#v, diff=%s", got, want, cmp.Diff(got, want))
 	}
 }
