@@ -49,19 +49,19 @@ func (r *GetHistoriesResponce) GetResponce() {
 
 func getHistories(req *GetHistoriesRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
-	aps, err := con.ListActivityPrograms(ctx.userID)
+	aps, err := con.ListActivityProgramsByUserID(ctx.userID)
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
 
-	hm := make(map[string][]*model.ActivityProgram, 0)
+	hm := make(map[string][]*model.ActivityProgram)
 	for _, v := range aps {
 		month := v.Datetime[4:6]
 		hm[month] = append(hm[month], v)
 	}
 
-	hs := make([]*History, 0, 0)
+	hs := make([]*History, 0)
 	for k, v := range hm {
 		h := &History{
 			Month:            k,

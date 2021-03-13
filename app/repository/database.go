@@ -90,9 +90,9 @@ func (c *dbConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (model.A
 	return ap.SeqNo, nil
 }
 
-func (c *dbConnection) ListActivityPrograms(userID model.UserID) ([]*model.ActivityProgram, error) {
-	aps := []*model.ActivityProgram{}
-	err := c.db.Find(&aps).Where("user_id = ?", userID).Error
+func (c *dbConnection) ListActivityPrograms() ([]*model.ActivityProgram, error) {
+	var aps []*model.ActivityProgram
+	err := c.db.Find(&aps).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -130,7 +130,7 @@ func (c *dbConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Route, 
 	return ps, nil
 }
 
-func (c *dbConnection) FindActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
+func (c *dbConnection) ListActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
 	db := c.db.Where("user_id = ?", userID)
 
 	var ps []*model.ActivityProgram
@@ -152,7 +152,7 @@ func (c *dbConnection) LatestLastUpload() (*model.LastUpload, error) {
 
 func (c *dbConnection) ListUser() ([]*model.User, error) {
 	us := []*model.User{}
-	err := c.db.Find(us).Error
+	err := c.db.Find(&us).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
