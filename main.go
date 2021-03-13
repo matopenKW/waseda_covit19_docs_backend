@@ -48,7 +48,7 @@ func main() {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{os.Getenv("FRONT_URL"), os.Getenv("FIREBASE_URL")}
+	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
 	config.AllowMethods = []string{"POST", "GET", "PUT", "DELETE"}
 	config.AllowHeaders = []string{
 		"Access-Control-Allow-Headers",
