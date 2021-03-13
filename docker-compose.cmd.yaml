@@ -5,6 +5,8 @@ services:
     container_name: local_cmd
     env_file:
       - .env
+    environment: 
+      GD_WORK_FOLDER: 1_C0EVIK-WeK0WSMF1eIDOXLkE6UhnmNJ
     tty: true
     volumes:
       - ./:/go/src

@@ -163,7 +163,7 @@ func TestPutActivityProgramService_Create(t *testing.T) {
 		t.Fatalf("Is error %#v", err)
 	}
 
-	got, err := con.ListActivityPrograms("test_user_id")
+	got, err := con.ListActivityProgramsByUserID("test_user_id")
 	if err != nil {
 		t.Fatalf("Is error %#v", err)
 	}

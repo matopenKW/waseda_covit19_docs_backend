@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"os"
+	"strings"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -14,9 +16,7 @@ import (
 )
 
 const (
-	ParentsPath     = "1_C0EVIK-WeK0WSMF1eIDOXLkE6UhnmNJ"
 	HistoryFileName = "history_%s.csv"
-	MasterDataID    = "1sJ7V19QDgN4o9BNrUpBE-G_MUYmoqiVZEWl7mmNyCRU"
 )
 
 type UploadHistoriesCsvImpl struct {
@@ -65,20 +65,17 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 		log.Println(err.Error())
 	}
 
-	// TODO　一時的にテキストを取得
-	//	buf, _ := ioutil.ReadFile("test.csv")
-	buf, err := createHistoryFile()
+	buf, err := createHistoryFile(con)
 	if err != nil {
 		return err
 	}
 	r := bytes.NewReader(buf)
-
 	weekDay := time.Now().Weekday()
 	ret, err := srv.Create(r, &drive.File{
 		OriginalFilename: fmt.Sprintf(HistoryFileName, weekDay.String()),
 		Name:             fmt.Sprintf(HistoryFileName, weekDay.String()),
 		Description:      "test",
-		Parents:          []string{ParentsPath},
+		Parents:          []string{os.Getenv("GOOGLE_DRIVE_WORK_FOLDER")},
 		MimeType:         "text/csv",
 	})
 	if err != nil {
@@ -101,19 +98,35 @@ func (s *UploadHistoriesCsvImpl) Execute() error {
 	return nil
 }
 
-func createHistoryFile() ([]byte, error) {
+func createHistoryFile(con repository.Connection) ([]byte, error) {
 
-	// file, err := srv.Files.Get("1sJ7V19QDgN4o9BNrUpBE-G_MUYmoqiVZEWl7mmNyCRU").Do()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// log.Println(file)
+	us, err := con.ListUser()
+	if err != nil {
+		return nil, err
+	}
 
-	testData := []string{"1", "1", "1", "1", "1"}
+	uMap := make(map[model.UserID]*model.User)
+	for _, v := range us {
+		uMap[v.ID] = v
+	}
 
 	var csv string
-	for _, s := range testData {
-		csv += s + ","
+	header := []string{"氏名", "日時", "内容", "経路（行き）", "経路（帰り）"}
+	csv += strings.Join(header, ",")
+	csv += "\n"
+
+	aps, err := con.ListActivityPrograms()
+	if err != nil {
+		return nil, err
 	}
+
+	var activeDatas []string
+	for _, v := range aps {
+		u := uMap[v.UserID]
+		activeDatas := append(activeDatas, u.Name, fmt.Sprintf("%s / %s~%s", v.Datetime, v.StartTime, v.EndTime), "", v.OutwardTrip, v.ReturnTrip)
+		csv += strings.Join(activeDatas, ",")
+		csv += "\n"
+	}
+
 	return []byte(csv), nil
 }

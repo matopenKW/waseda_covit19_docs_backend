@@ -82,14 +82,8 @@ func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (mod
 	return seq, nil
 }
 
-func (c *dbMockConnection) ListActivityPrograms(userID model.UserID) ([]*model.ActivityProgram, error) {
-	aps := []*model.ActivityProgram{}
-	for _, v := range mock.activityPrograms {
-		if v.UserID == userID {
-			aps = append(aps, v)
-		}
-	}
-	return aps, nil
+func (c *dbMockConnection) ListActivityPrograms() ([]*model.ActivityProgram, error) {
+	return mock.activityPrograms, nil
 }
 
 func (c *dbMockConnection) FindRoute(userID model.UserID, seqNo model.RouteSeqNo) (*model.Route, error) {
@@ -115,7 +109,7 @@ func (c *dbMockConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Rou
 	return nil, nil
 }
 
-func (c *dbMockConnection) FindActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
+func (c *dbMockConnection) ListActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
 	return nil, nil
 }
 
