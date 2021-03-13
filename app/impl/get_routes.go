@@ -36,6 +36,7 @@ func (r *GetRoutesResponce) GetResponce() {
 
 func GetRoutes(req *GetRoutesRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
+
 	rs, err := con.FindRoutesByUserID(ctx.GetUserID())
 	if err != nil {
 		return nil, err

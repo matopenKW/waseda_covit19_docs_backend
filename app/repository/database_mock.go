@@ -83,23 +83,23 @@ func (c *dbMockConnection) ListActivityPrograms(userID string) ([]*model.Activit
 	return aps, nil
 }
 
-func (c *dbMockConnection) FindRoute(id model.RouteID) (*model.Route, error) {
+func (c *dbMockConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.Route, error) {
 	for _, v := range mock.routes {
-		if v.ID == id {
+		if v.UserID == userID && v.SeqNo == seqNo {
 			return v, nil
 		}
 	}
 	return nil, nil
 }
 
-func (c *dbMockConnection) FindMaxRouteID() (model.RouteID, error) {
-	id := model.RouteID(0)
+func (c *dbMockConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error) {
+	seq := model.RouteSeqNo(0)
 	for _, v := range mock.routes {
-		if id < v.ID {
-			id = v.ID
+		if v.UserID == userID {
+			seq = v.SeqNo
 		}
 	}
-	return id, nil
+	return seq, nil
 }
 
 func (c *dbMockConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
@@ -134,7 +134,7 @@ func (t *dbMockTransaction) CreateActivityProgram(ap *model.ActivityProgram) (*m
 func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 	exists := false
 	for _, v := range mock.routes {
-		if v.ID == r.ID {
+		if v.UserID == r.UserID && v.SeqNo == r.SeqNo {
 			exists = true
 			break
 		}
@@ -147,9 +147,9 @@ func (t *dbMockTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 
 func (t *dbMockTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
 	for _, v := range mock.routes {
-		if v.ID == r.ID {
-			v.ID = r.ID
+		if v.UserID == r.UserID && v.SeqNo == r.SeqNo {
 			v.UserID = r.UserID
+			v.SeqNo = r.SeqNo
 			v.Name = r.Name
 			v.OutwardTrip = r.OutwardTrip
 			v.ReturnTrip = r.ReturnTrip
@@ -160,21 +160,21 @@ func (t *dbMockTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
 }
 
 func (t *dbMockTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
-	id := model.RouteID(0)
+	seq := model.RouteSeqNo(0)
 	for _, v := range mock.routes {
-		if id <= v.ID {
-			id = v.ID
+		if v.UserID == r.UserID && seq <= v.SeqNo {
+			seq = v.SeqNo
 		}
 	}
-	r.ID = id + 1
+	r.SeqNo = seq + 1
 	mock.routes = append(mock.routes, r)
 	return r, nil
 }
 
-func (t *dbMockTransaction) DeleteRoute(id model.RouteID) error {
+func (t *dbMockTransaction) DeleteRoute(userID string, seqNo model.RouteSeqNo) error {
 	rs := make([]*model.Route, 0, 0)
 	for _, v := range mock.routes {
-		if v.ID == id {
+		if v.UserID == userID && v.SeqNo == seqNo {
 			continue
 		}
 		rs = append(rs, v)

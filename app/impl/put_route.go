@@ -18,7 +18,6 @@ func (s *PutRouteService) New() RequestImpl {
 
 // PutRouteRequest is put route request
 type PutRouteRequest struct {
-	RouteID     int    `json:"route_id"`
 	Name        string `json:"name"`
 	OutwardTrip string `json:"outward_trip"`
 	ReturnTrip  string `json:"return_trip"`
@@ -54,27 +53,20 @@ func (r *PutRouteResponce) GetResponce() {
 func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
+	maxSeq, err := con.FindRouteMaxSeqNo(ctx.userID)
+	if err != nil {
+		return nil, err
+	}
+
 	var route *model.Route
-	var err error
 	err = con.RunTransaction(func(tx repository.Transaction) error {
-		var rID model.RouteID
-		if req.RouteID == 0 {
-			maxID, err := con.FindMaxRouteID()
-			if err != nil {
-				return err
-			}
-			rID = maxID + 1
-		} else {
-			rID = model.RouteID(req.RouteID)
-		}
 		route, err = tx.SaveRoute(&model.Route{
-			ID:          rID,
 			UserID:      ctx.userID,
+			SeqNo:       maxSeq + 1,
 			Name:        req.Name,
 			OutwardTrip: req.OutwardTrip,
 			ReturnTrip:  req.ReturnTrip,
 		})
-
 		if err != nil {
 			return err
 		}
