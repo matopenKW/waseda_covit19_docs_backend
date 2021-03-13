@@ -1,2 +1,2 @@
 web: waseda_covit19_docs_backend
-worker: waseda_covit19_docs_backend/app/cmd
+worker: app/cmd
