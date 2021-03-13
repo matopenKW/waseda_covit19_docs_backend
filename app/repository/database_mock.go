@@ -110,7 +110,13 @@ func (c *dbMockConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Rou
 }
 
 func (c *dbMockConnection) ListActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
-	return nil, nil
+	aps := []*model.ActivityProgram{}
+	for _, v := range mock.activityPrograms {
+		if v.UserID == userID {
+			aps = append(aps, v)
+		}
+	}
+	return aps, nil
 }
 
 func (c *dbMockConnection) LatestLastUpload() (*model.LastUpload, error) {
