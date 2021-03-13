@@ -18,11 +18,11 @@ type Connection interface {
 	FindUser(model.UserID) (*model.User, error)
 	FindActivityProgram(model.UserID, model.ActivityProgramSeqNo) (*model.ActivityProgram, error)
 	FindActivityProgramMaxSeqNo(model.UserID) (model.ActivityProgramSeqNo, error)
-	ListActivityPrograms(model.UserID) ([]*model.ActivityProgram, error)
+	ListActivityPrograms() ([]*model.ActivityProgram, error)
 	FindRoute(model.UserID, model.RouteSeqNo) (*model.Route, error)
 	FindRouteMaxSeqNo(model.UserID) (model.RouteSeqNo, error)
 	FindRoutesByUserID(model.UserID) ([]*model.Route, error)
-	FindActivityProgramsByUserID(model.UserID) ([]*model.ActivityProgram, error)
+	ListActivityProgramsByUserID(model.UserID) ([]*model.ActivityProgram, error)
 	LatestLastUpload() (*model.LastUpload, error)
 	ListUser() ([]*model.User, error)
 }

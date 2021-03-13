@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
@@ -58,6 +59,9 @@ func exec(args []string) error {
 func GetImpl(db *gorm.DB, pm string) (service.CmdServiceImpl, error) {
 	switch pm {
 	case "upload_histories_csv":
+		if os.Getenv("GOOGLE_DRIVE_WORK_FOLDER") == "" {
+			return nil, fmt.Errorf("gd work folder env empty")
+		}
 		return service.NewUploadHistoriesCsvImpl(db)
 	default:
 		return nil, fmt.Errorf(fmt.Sprintf("not service pm=%s", pm))
