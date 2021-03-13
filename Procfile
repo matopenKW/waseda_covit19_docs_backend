@@ -1,1 +1,1 @@
-web: heroku-with-go
+web: main
