@@ -6,6 +6,8 @@ services:
     environment:
       DATABASE_URL: postgres://gwp:gwp@db:5432/gwp?sslmode=disable
       FRONT_URL: http://localhost:3000
+      FIREBASE_URL: http://localhost:3001
+      NO_AUTH_FUNC_ON: 1
     ports:
       - 8080:8080
     tty: true
