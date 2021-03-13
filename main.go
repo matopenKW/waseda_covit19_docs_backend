@@ -48,7 +48,7 @@ func main() {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
+	config.AllowOrigins = []string{os.Getenv("FRONT_URL"), os.Getenv("FIREBASE_URL")}
 	config.AllowMethods = []string{"POST", "GET", "PUT", "DELETE"}
 	config.AllowHeaders = []string{
 		"Access-Control-Allow-Headers",
@@ -66,8 +66,11 @@ func main() {
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
 	r.PUT("/api/v1/update_user", appHandler(&serviceImpl.updateUsers))
-	r.POST("/api/v1/create_user", appHandler((&serviceImpl.createUser)))
 	r.GET("/api/v1/get_user", appHandler((&serviceImpl.getUser)))
+
+	if os.Getenv("NO_AUTH_FUNC_ON") == "1" {
+		r.POST("/api/v1/create_user", appNoAuthHandler((&serviceImpl.createUser)))
+	}
 
 	r.Run()
 }
@@ -126,6 +129,47 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 	}
 }
 
+func appNoAuthHandler(s impl.ServiceImpl) func(*gin.Context) {
+	return func(ctx *gin.Context) {
+		req := s.New()
+
+		// dbConnection
+		db, err := repository.NewDbConnection()
+		if err != nil {
+			log.Println(err)
+			errorHandring("db connections error", ctx)
+			return
+		}
+		defer db.Close()
+
+		repo := repository.NewDbRepository(db)
+		con, err := repo.NewConnection()
+		if err != nil {
+			log.Println(err)
+			errorHandring("db connections error", ctx)
+			return
+		}
+
+		req.SetRequest(ctx)
+		err = req.Validate()
+		if err != nil {
+			log.Println(err)
+			errorHandring("servr error", ctx)
+			return
+		}
+
+		implCtx := impl.NewContext("", con, master)
+		res, err := req.Execute(implCtx)
+		if err != nil {
+			log.Println(err)
+			errorHandring("servr error", ctx)
+			return
+		}
+
+		ctx.JSON(http.StatusOK, res)
+	}
+}
+
 func errorHandring(message string, ctx *gin.Context) {
 	ctx.JSON(http.StatusInternalServerError, gin.H{
 		"message": message,
@@ -136,7 +180,7 @@ func authJWT(ctx *gin.Context) (*auth.Token, error) {
 	auth, err := repository.OpenAuthJSON()
 	if err != nil {
 		log.Println(err)
-		return nil, fmt.Errorf("Failed Connection error")
+		return nil, fmt.Errorf("failed Connection error")
 	}
 
 	authHeader := ctx.Request.Header.Get("Authorization")
