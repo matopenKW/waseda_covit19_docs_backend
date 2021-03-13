@@ -101,7 +101,7 @@ func (c *dbConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.
 
 func (c *dbConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error) {
 	r := &model.Route{}
-	err := c.db.Order("seq_no DESC").Last(r).Where("user_id = ?", userID).Find(r).Error
+	err := c.db.Order("seq_no DESC").Where("user_id = ?", userID).Last(r).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return 0, err
 	}
@@ -158,7 +158,7 @@ func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.
 }
 
 func (t *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
-	err := t.db.Save(r).Error
+	err := t.db.Save(&r).Error
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (t *dbTransaction) SaveRoute(r *model.Route) (*model.Route, error) {
 }
 
 func (t *dbTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
-	err := t.db.Update(r).Error
+	err := t.db.Model(&model.Route{}).Where("user_id = ? and seq_no = ?", r.UserID, r.SeqNo).Update(&r).Error
 	if err != nil {
 		return nil, err
 	}
@@ -176,7 +176,7 @@ func (t *dbTransaction) UpdateRoute(r *model.Route) (*model.Route, error) {
 }
 
 func (t *dbTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
-	err := t.db.Create(r).Error
+	err := t.db.Create(&r).Error
 	if err != nil {
 		return nil, err
 	}
@@ -185,10 +185,7 @@ func (t *dbTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
 }
 
 func (t *dbTransaction) DeleteRoute(userID string, seqNo model.RouteSeqNo) error {
-	err := t.db.Delete(&model.Route{
-		UserID: userID,
-		SeqNo:  seqNo,
-	}).Error
+	err := t.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Delete(&model.Route{}).Error
 	if err != nil {
 		return err
 	}

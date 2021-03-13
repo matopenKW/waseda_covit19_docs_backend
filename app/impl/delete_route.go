@@ -2,7 +2,6 @@ package impl
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -29,7 +28,6 @@ func (r *DeleteRouteRequest) SetRequest(ctx *gin.Context) {
 
 // Validate is validate receiver
 func (r *DeleteRouteRequest) Validate() error {
-	log.Println(r)
 	if r.SeqNo == nil {
 		return fmt.Errorf("Invalid seq no")
 	}
