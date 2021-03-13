@@ -59,7 +59,18 @@ func (c *dbConnection) RunTransaction(f func(Transaction) error) error {
 	return nil
 }
 
-func (c *dbConnection) FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
+func (c *dbConnection) FindUser(userID model.UserID) (*model.User, error) {
+	u := &model.User{}
+	err := c.db.Where("id = ?", userID).Find(&u).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	} else if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+	return u, nil
+}
+
+func (c *dbConnection) FindActivityProgram(userID model.UserID, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
 	ap := &model.ActivityProgram{}
 	err := c.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Find(&ap).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -70,7 +81,7 @@ func (c *dbConnection) FindActivityProgram(userID string, seqNo model.ActivityPr
 	return ap, nil
 }
 
-func (c *dbConnection) FindActivityProgramMaxSeqNo(userID string) (model.ActivityProgramSeqNo, error) {
+func (c *dbConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (model.ActivityProgramSeqNo, error) {
 	ap := &model.ActivityProgram{}
 	err := c.db.Limit(1).Order("seq_no DESC").Where("user_id = ?", userID).Find(ap).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -79,7 +90,7 @@ func (c *dbConnection) FindActivityProgramMaxSeqNo(userID string) (model.Activit
 	return ap.SeqNo, nil
 }
 
-func (c *dbConnection) ListActivityPrograms(userID string) ([]*model.ActivityProgram, error) {
+func (c *dbConnection) ListActivityPrograms(userID model.UserID) ([]*model.ActivityProgram, error) {
 	aps := []*model.ActivityProgram{}
 	err := c.db.Find(&aps).Where("user_id = ?", userID).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -88,7 +99,7 @@ func (c *dbConnection) ListActivityPrograms(userID string) ([]*model.ActivityPro
 	return aps, nil
 }
 
-func (c *dbConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.Route, error) {
+func (c *dbConnection) FindRoute(userID model.UserID, seqNo model.RouteSeqNo) (*model.Route, error) {
 	r := &model.Route{}
 	err := c.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Find(&r).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -99,7 +110,7 @@ func (c *dbConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.
 	return r, nil
 }
 
-func (c *dbConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error) {
+func (c *dbConnection) FindRouteMaxSeqNo(userID model.UserID) (model.RouteSeqNo, error) {
 	r := &model.Route{}
 	err := c.db.Order("seq_no DESC").Where("user_id = ?", userID).Last(r).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -108,8 +119,8 @@ func (c *dbConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error
 	return r.SeqNo, nil
 }
 
-func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
-	db := c.db.Where("user_id = ?", UserID)
+func (c *dbConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Route, error) {
+	db := c.db.Where("user_id = ?", userID)
 
 	var ps []*model.Route
 	err := db.Find(&ps).Error
@@ -119,8 +130,8 @@ func (c *dbConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error)
 	return ps, nil
 }
 
-func (c *dbConnection) FindActivityProgramsByUserID(UserID string) ([]*model.ActivityProgram, error) {
-	db := c.db.Where("user_id = ?", UserID)
+func (c *dbConnection) FindActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
+	db := c.db.Where("user_id = ?", userID)
 
 	var ps []*model.ActivityProgram
 	err := db.Find(&ps).Error
@@ -184,7 +195,7 @@ func (t *dbTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
 	return r, nil
 }
 
-func (t *dbTransaction) DeleteRoute(userID string, seqNo model.RouteSeqNo) error {
+func (t *dbTransaction) DeleteRoute(userID model.UserID, seqNo model.RouteSeqNo) error {
 	err := t.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Delete(&model.Route{}).Error
 	if err != nil {
 		return err
@@ -204,6 +215,21 @@ func (t *dbTransaction) UpdateLastUpload(m *model.LastUpload) error {
 
 func (t *dbTransaction) CreateUser(u *model.User) error {
 	err := t.db.Create(u).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (t *dbTransaction) UpdateUser(u *model.User) error {
+	err := t.db.Model(&model.User{}).Where("id = ?", u.ID).Update(map[string]interface{}{
+		"name":            u.Name,
+		"university_name": u.UniversityName,
+		"faculty_name":    u.FacultyName,
+		"student_no":      u.StudentNo,
+		"cell_phon_no":    u.CellPhonNo,
+	}).Error
 	if err != nil {
 		return err
 	}

@@ -27,7 +27,9 @@ var serviceImpl struct {
 	putRouteService           impl.PutRouteService
 	deleteRouteService        impl.DeleteRouteService
 	getHistories              impl.GetHistoriesService
-	putUsers                  impl.PutUserService
+	updateUsers               impl.UpdateUserService
+	createUser                impl.CreateUserService
+	getUser                   impl.GetUserService
 }
 
 func init() {
@@ -47,7 +49,7 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
-	config.AllowMethods = []string{"GET", "PUT", "DELETE"}
+	config.AllowMethods = []string{"POST", "GET", "PUT", "DELETE"}
 	config.AllowHeaders = []string{
 		"Access-Control-Allow-Headers",
 		"Content-Type",
@@ -63,7 +65,9 @@ func main() {
 	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
 	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
-	r.PUT("/api/v1/put_user", appHandler(&serviceImpl.putUsers))
+	r.PUT("/api/v1/update_user", appHandler(&serviceImpl.updateUsers))
+	r.POST("/api/v1/create_user", appHandler((&serviceImpl.createUser)))
+	r.GET("/api/v1/get_user", appHandler((&serviceImpl.getUser)))
 
 	r.Run()
 }
@@ -106,15 +110,15 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		err = req.Validate()
 		if err != nil {
 			log.Println(err)
-			errorHandring("servr ereror", ctx)
+			errorHandring("servr error", ctx)
 			return
 		}
 
-		implCtx := impl.NewContext(token.UID, con, master)
+		implCtx := impl.NewContext(model.UserID(token.UID), con, master)
 		res, err := req.Execute(implCtx)
 		if err != nil {
 			log.Println(err)
-			errorHandring("servr ereror", ctx)
+			errorHandring("servr error", ctx)
 			return
 		}
 

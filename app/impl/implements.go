@@ -19,16 +19,16 @@ func NewMaster(practices []*model.Practice, activities []*model.Activity) *Maste
 }
 
 type Context struct {
-	userID     string
+	userID     model.UserID
 	connection repository.Connection
 	master     *Master
 }
 
-func NewContext(userID string, con repository.Connection, master *Master) *Context {
+func NewContext(userID model.UserID, con repository.Connection, master *Master) *Context {
 	return &Context{userID, con, master}
 }
 
-func (c *Context) GetUserID() string {
+func (c *Context) GetUserID() model.UserID {
 	return c.userID
 }
 

@@ -15,13 +15,14 @@ type Repository interface {
 type Connection interface {
 	RunTransaction(f func(Transaction) error) error
 
-	FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error)
-	FindActivityProgramMaxSeqNo(string) (model.ActivityProgramSeqNo, error)
-	ListActivityPrograms(string) ([]*model.ActivityProgram, error)
-	FindRoute(userID string, seqNo model.RouteSeqNo) (*model.Route, error)
-	FindRouteMaxSeqNo(string) (model.RouteSeqNo, error)
-	FindRoutesByUserID(string) ([]*model.Route, error)
-	FindActivityProgramsByUserID(string) ([]*model.ActivityProgram, error)
+	FindUser(model.UserID) (*model.User, error)
+	FindActivityProgram(model.UserID, model.ActivityProgramSeqNo) (*model.ActivityProgram, error)
+	FindActivityProgramMaxSeqNo(model.UserID) (model.ActivityProgramSeqNo, error)
+	ListActivityPrograms(model.UserID) ([]*model.ActivityProgram, error)
+	FindRoute(model.UserID, model.RouteSeqNo) (*model.Route, error)
+	FindRouteMaxSeqNo(model.UserID) (model.RouteSeqNo, error)
+	FindRoutesByUserID(model.UserID) ([]*model.Route, error)
+	FindActivityProgramsByUserID(model.UserID) ([]*model.ActivityProgram, error)
 	LatestLastUpload() (*model.LastUpload, error)
 	ListUser() ([]*model.User, error)
 }
@@ -31,9 +32,10 @@ type Transaction interface {
 	SaveRoute(*model.Route) (*model.Route, error)
 	UpdateRoute(*model.Route) (*model.Route, error)
 	CreateRoute(*model.Route) (*model.Route, error)
-	DeleteRoute(userID string, seqNo model.RouteSeqNo) error
+	DeleteRoute(model.UserID, model.RouteSeqNo) error
 	UpdateLastUpload(*model.LastUpload) error
 	CreateUser(*model.User) error
+	UpdateUser(*model.User) error
 }
 
 type GoogleDriveRepository interface {

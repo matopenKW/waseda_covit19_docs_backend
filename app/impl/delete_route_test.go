@@ -82,7 +82,7 @@ func TestDeleteRoute_Execute(t *testing.T) {
 }
 
 func TestDeleteRoute_DeleteRoute(t *testing.T) {
-	testRouteUserID := "test_user_id"
+	testRouteUserID := model.UserID("test_user_id")
 	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	mock.SetRoutes([]*model.Route{

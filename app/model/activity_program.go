@@ -3,7 +3,7 @@ package model
 type ActivityProgramSeqNo int
 
 type ActivityProgram struct {
-	UserID             string               `gorm:"primaryKey"`
+	UserID             UserID               `gorm:"primaryKey"`
 	SeqNo              ActivityProgramSeqNo `gorm:"primaryKey"`
 	Datetime           string
 	StartTime          string

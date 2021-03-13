@@ -54,7 +54,16 @@ func (c *dbMockConnection) RunTransaction(f func(Transaction) error) error {
 	return f(&dbMockTransaction{})
 }
 
-func (c *dbMockConnection) FindActivityProgram(userID string, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
+func (c *dbMockConnection) FindUser(userID model.UserID) (*model.User, error) {
+	for _, v := range mock.users {
+		if v.ID == userID {
+			return v, nil
+		}
+	}
+	return nil, nil
+}
+
+func (c *dbMockConnection) FindActivityProgram(userID model.UserID, seqNo model.ActivityProgramSeqNo) (*model.ActivityProgram, error) {
 	for _, v := range mock.activityPrograms {
 		if v.UserID == userID && v.SeqNo == seqNo {
 			return v, nil
@@ -63,7 +72,7 @@ func (c *dbMockConnection) FindActivityProgram(userID string, seqNo model.Activi
 	return nil, nil
 }
 
-func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID string) (model.ActivityProgramSeqNo, error) {
+func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (model.ActivityProgramSeqNo, error) {
 	seq := model.ActivityProgramSeqNo(0)
 	for _, v := range mock.activityPrograms {
 		if v.UserID == userID {
@@ -73,7 +82,7 @@ func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID string) (model.Act
 	return seq, nil
 }
 
-func (c *dbMockConnection) ListActivityPrograms(userID string) ([]*model.ActivityProgram, error) {
+func (c *dbMockConnection) ListActivityPrograms(userID model.UserID) ([]*model.ActivityProgram, error) {
 	aps := []*model.ActivityProgram{}
 	for _, v := range mock.activityPrograms {
 		if v.UserID == userID {
@@ -83,7 +92,7 @@ func (c *dbMockConnection) ListActivityPrograms(userID string) ([]*model.Activit
 	return aps, nil
 }
 
-func (c *dbMockConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*model.Route, error) {
+func (c *dbMockConnection) FindRoute(userID model.UserID, seqNo model.RouteSeqNo) (*model.Route, error) {
 	for _, v := range mock.routes {
 		if v.UserID == userID && v.SeqNo == seqNo {
 			return v, nil
@@ -92,7 +101,7 @@ func (c *dbMockConnection) FindRoute(userID string, seqNo model.RouteSeqNo) (*mo
 	return nil, nil
 }
 
-func (c *dbMockConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, error) {
+func (c *dbMockConnection) FindRouteMaxSeqNo(userID model.UserID) (model.RouteSeqNo, error) {
 	seq := model.RouteSeqNo(0)
 	for _, v := range mock.routes {
 		if v.UserID == userID {
@@ -102,11 +111,11 @@ func (c *dbMockConnection) FindRouteMaxSeqNo(userID string) (model.RouteSeqNo, e
 	return seq, nil
 }
 
-func (c *dbMockConnection) FindRoutesByUserID(UserID string) ([]*model.Route, error) {
+func (c *dbMockConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Route, error) {
 	return nil, nil
 }
 
-func (c *dbMockConnection) FindActivityProgramsByUserID(UserID string) ([]*model.ActivityProgram, error) {
+func (c *dbMockConnection) FindActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
 	return nil, nil
 }
 
@@ -171,7 +180,7 @@ func (t *dbMockTransaction) CreateRoute(r *model.Route) (*model.Route, error) {
 	return r, nil
 }
 
-func (t *dbMockTransaction) DeleteRoute(userID string, seqNo model.RouteSeqNo) error {
+func (t *dbMockTransaction) DeleteRoute(userID model.UserID, seqNo model.RouteSeqNo) error {
 	rs := make([]*model.Route, 0, 0)
 	for _, v := range mock.routes {
 		if v.UserID == userID && v.SeqNo == seqNo {
@@ -199,5 +208,16 @@ func (t *dbMockTransaction) CreateUser(u *model.User) error {
 	}
 
 	mock.users = append(mock.users, u)
+	return nil
+}
+
+func (t *dbMockTransaction) UpdateUser(u *model.User) error {
+	for i, m := range mock.users {
+		if m.ID == u.ID {
+			mock.users[i] = u
+			break
+		}
+	}
+
 	return nil
 }

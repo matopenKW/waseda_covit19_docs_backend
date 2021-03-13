@@ -97,7 +97,7 @@ func TestPutRoute_RegisterRoute(t *testing.T) {
 		ReturnTrip:  "test_return_trip",
 	}
 
-	testRouteUserID := "test_user_id"
+	testRouteUserID := model.UserID("test_user_id")
 	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	repo := repository.NewMockDbRepository(mock)
@@ -132,7 +132,7 @@ func TestPutRoute_UpdateRoute(t *testing.T) {
 		ReturnTrip:  "test_update_return_trip",
 	}
 
-	testRouteUserID := "test_user_id"
+	testRouteUserID := model.UserID("test_user_id")
 	testRouteSeqNo := model.RouteSeqNo(1)
 	mock := repository.NewDBMock()
 	mock.SetRoutes([]*model.Route{
