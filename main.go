@@ -184,9 +184,9 @@ func authJWT(ctx *gin.Context) (*auth.Token, error) {
 	}
 
 	authHeader := ctx.Request.Header.Get("Authorization")
-	idToken := strings.Replace(authHeader, "Bearer ", "", 1)
+	IDToken := strings.Replace(authHeader, "Bearer ", "", 1)
 
-	token, err := auth.VerifyIDToken(context.Background(), idToken)
+	token, err := auth.VerifyIDToken(context.Background(), IDToken)
 	if err != nil {
 		log.Println(err)
 		return nil, fmt.Errorf(fmt.Sprintf("error verifying ID token: %v\n", err))
@@ -197,7 +197,7 @@ func authJWT(ctx *gin.Context) (*auth.Token, error) {
 
 func authDev(ctx *gin.Context) (*auth.Token, error) {
 	return &auth.Token{
-		UID: "user_id",
+		UID: "user_ID",
 	}, nil
 }
 
@@ -220,5 +220,21 @@ func setMasterData() *impl.Master {
 		{ID: 9, Name: "アンサンブル"},
 	}
 
-	return impl.NewMaster(practices, activities)
+	parts := []*model.Part{
+		{ID: 1, Name: "Vn."},
+		{ID: 2, Name: "Va."},
+		{ID: 3, Name: "Vc."},
+		{ID: 4, Name: "Cb."},
+		{ID: 5, Name: "FI."},
+		{ID: 6, Name: "FI."},
+		{ID: 7, Name: "Ob."},
+		{ID: 8, Name: "Fg."},
+		{ID: 9, Name: "Hr."},
+		{ID: 10, Name: "Tp."},
+		{ID: 11, Name: "Trb."},
+		{ID: 12, Name: "Tub."},
+		{ID: 13, Name: "Perc."},
+	}
+
+	return impl.NewMaster(practices, activities, parts)
 }

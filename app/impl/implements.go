@@ -9,12 +9,14 @@ import (
 type Master struct {
 	practices  []*model.Practice
 	activities []*model.Activity
+	parts      []*model.Part
 }
 
-func NewMaster(practices []*model.Practice, activities []*model.Activity) *Master {
+func NewMaster(practices []*model.Practice, activities []*model.Activity, parts []*model.Part) *Master {
 	return &Master{
 		practices:  practices,
 		activities: activities,
+		parts:      parts,
 	}
 }
 

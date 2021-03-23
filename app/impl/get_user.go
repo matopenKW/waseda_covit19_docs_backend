@@ -2,6 +2,7 @@ package impl
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 // GetUserService is get user service
@@ -34,6 +35,8 @@ type ResponceUser struct {
 	CellPhonNo     string
 	Ki             int
 	PartID         int
+
+	Parts []*model.Part
 }
 
 type GetUserResponce struct {
@@ -65,6 +68,7 @@ func GetUser(req *GetUserRequest, ctx *Context) (ResponceImpl, error) {
 			CellPhonNo:     u.CellPhonNo,
 			Ki:             u.Ki,
 			PartID:         u.PartID,
+			Parts:          ctx.master.parts,
 		},
 	}, nil
 }
