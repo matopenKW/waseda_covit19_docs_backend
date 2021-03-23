@@ -23,6 +23,8 @@ type UpdateUserRequest struct {
 	FacultyName    string `json:"faculty_name"`
 	StudentNo      string `json:"student_no"`
 	CellPhonNo     string `json:"cell_phon_no"`
+	Ki             int    `json:"ki"`
+	PartID         int    `json:"part_id"`
 }
 
 // SetRequest is request set receiver
@@ -67,6 +69,8 @@ func UpdateUser(req *UpdateUserRequest, ctx *Context) (ResponceImpl, error) {
 			FacultyName:    req.FacultyName,
 			StudentNo:      req.StudentNo,
 			CellPhonNo:     req.CellPhonNo,
+			Ki:             req.Ki,
+			PartID:         req.PartID,
 		})
 		if err != nil {
 			return err

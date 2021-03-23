@@ -10,4 +10,6 @@ type User struct {
 	FacultyName    string
 	StudentNo      string
 	CellPhonNo     string
+	Ki             int
+	PartID         int
 }
