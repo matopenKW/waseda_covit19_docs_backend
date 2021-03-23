@@ -19,6 +19,8 @@ func TestUpdateUser_SetRequest(t *testing.T) {
 		FacultyName:    "TEST_FACULTY_NAME",
 		StudentNo:      "TEST_STUDENT_NO",
 		CellPhonNo:     "TEST_CELL_PHON_NO",
+		Ki:             33,
+		PartID:         1,
 	}
 
 	bs := []byte(`{
@@ -26,12 +28,13 @@ func TestUpdateUser_SetRequest(t *testing.T) {
 		"university_name": "TEST_UNIVERSITY_NAME",
 		"faculty_name": "TEST_FACULTY_NAME",
 		"student_no": "TEST_STUDENT_NO",
-		"cell_phon_no": "TEST_CELL_PHON_NO"
+		"cell_phon_no": "TEST_CELL_PHON_NO",
+		"ki": 33,
+		"part_id": 1
 		}`)
 	req, _ := http.NewRequest("GET", "/api/v1/update_user", bytes.NewBuffer(bs))
 
-	var ctx *gin.Context
-	ctx = &gin.Context{
+	ctx := &gin.Context{
 		Request: req,
 	}
 
@@ -50,6 +53,8 @@ func TestUpdateUser_Validate(t *testing.T) {
 		FacultyName:    "TEST_FACULTY_NAME",
 		StudentNo:      "TEST_STUDENT_NO",
 		CellPhonNo:     "TEST_CELL_PHON_NO",
+		Ki:             33,
+		PartID:         1,
 	}
 	err := impl.Validate()
 	if err != nil {
@@ -75,6 +80,8 @@ func TestUpdateUser_Execute(t *testing.T) {
 		FacultyName:    "TEST_FACULTY_NAME",
 		StudentNo:      "TEST_STUDENT_NO",
 		CellPhonNo:     "TEST_CELL_PHON_NO",
+		Ki:             33,
+		PartID:         1,
 	}
 	got, err := impl.Execute(implCtx)
 	if err != nil {
@@ -100,6 +107,8 @@ func TestUpdateUser_Execute_Fail(t *testing.T) {
 		FacultyName:    "TEST_FACULTY_NAME",
 		StudentNo:      "TEST_STUDENT_NO",
 		CellPhonNo:     "TEST_CELL_PHON_NO",
+		Ki:             33,
+		PartID:         1,
 	}
 	_, err := impl.Execute(implCtx)
 	if err == nil {

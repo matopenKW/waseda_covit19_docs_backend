@@ -32,6 +32,8 @@ type ResponceUser struct {
 	FacultyName    string
 	StudentNo      string
 	CellPhonNo     string
+	Ki             int
+	PartID         int
 }
 
 type GetUserResponce struct {
@@ -61,6 +63,8 @@ func GetUser(req *GetUserRequest, ctx *Context) (ResponceImpl, error) {
 			FacultyName:    u.FacultyName,
 			StudentNo:      u.StudentNo,
 			CellPhonNo:     u.CellPhonNo,
+			Ki:             u.Ki,
+			PartID:         u.PartID,
 		},
 	}, nil
 }

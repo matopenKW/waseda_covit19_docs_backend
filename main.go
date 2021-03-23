@@ -99,8 +99,8 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		var token *auth.Token
 		if os.Getenv("ENV") != "prd" {
 			token, err = authDev(ctx)
-		} else {
 			db.LogMode(true)
+		} else {
 			token, err = authJWT(ctx)
 		}
 		if err != nil {

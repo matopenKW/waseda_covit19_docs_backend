@@ -229,6 +229,8 @@ func (t *dbTransaction) UpdateUser(u *model.User) error {
 		"faculty_name":    u.FacultyName,
 		"student_no":      u.StudentNo,
 		"cell_phon_no":    u.CellPhonNo,
+		"ki":              u.Ki,
+		"part_id":         u.PartID,
 	}).Error
 	if err != nil {
 		return err

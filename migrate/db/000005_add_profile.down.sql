@@ -1,0 +1,2 @@
+ALTER TABLE users DROP COLUMN part_id;
+ALTER TABLE users DROP COLUMN ki;
