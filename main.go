@@ -30,6 +30,7 @@ var serviceImpl struct {
 	updateUsers               impl.UpdateUserService
 	createUser                impl.CreateUserService
 	getUser                   impl.GetUserService
+	deleteActivityProgram     impl.DeleteActivityProgramService
 }
 
 func init() {
@@ -67,6 +68,7 @@ func main() {
 	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
 	r.PUT("/api/v1/update_user", appHandler(&serviceImpl.updateUsers))
 	r.GET("/api/v1/get_user", appHandler((&serviceImpl.getUser)))
+	r.DELETE("/api/v1/delete_activity_program", appHandler(&serviceImpl.deleteActivityProgram))
 
 	if os.Getenv("NO_AUTH_FUNC_ON") == "1" {
 		r.POST("/api/v1/create_user", appNoAuthHandler((&serviceImpl.createUser)))
