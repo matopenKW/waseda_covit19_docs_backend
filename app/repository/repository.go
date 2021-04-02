@@ -36,6 +36,8 @@ type Transaction interface {
 	UpdateLastUpload(*model.LastUpload) error
 	CreateUser(*model.User) error
 	UpdateUser(*model.User) error
+	UpdateActivityProgram(*model.ActivityProgram) (*model.ActivityProgram, error)
+	DeleteActivityProgram(model.UserID, model.ActivityProgramSeqNo) error
 }
 
 type GoogleDriveRepository interface {

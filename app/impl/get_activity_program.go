@@ -30,7 +30,7 @@ func (r *GetActivityProgramRequest) SetRequest(ctx *gin.Context) {
 // Validate is validate
 func (r *GetActivityProgramRequest) Validate() error {
 	if r.SeqNo == 0 {
-		return fmt.Errorf("Invalid seq no")
+		return fmt.Errorf("invalid seq no")
 	}
 	return nil
 }
