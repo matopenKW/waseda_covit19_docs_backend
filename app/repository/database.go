@@ -238,3 +238,21 @@ func (t *dbTransaction) UpdateUser(u *model.User) error {
 
 	return nil
 }
+
+func (t *dbTransaction) UpdateActivityProgram(m *model.ActivityProgram) (*model.ActivityProgram, error) {
+	result := t.db.Model(&model.ActivityProgram{}).Where("user_id = ? and seq_no = ?", m.UserID, m.SeqNo).Update(m)
+	if err := result.Error; err != nil {
+		return nil, err
+	}
+
+	return m, nil
+}
+
+func (t *dbTransaction) DeleteActivityProgram(userID model.UserID, seqNo model.ActivityProgramSeqNo) error {
+	err := t.db.Where("user_id = ? and seq_no = ?", userID, seqNo).Delete(&model.ActivityProgram{}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

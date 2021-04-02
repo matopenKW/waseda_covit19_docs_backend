@@ -16,6 +16,7 @@ func (s *PutActivityProgramService) New() RequestImpl {
 
 // PutActivityProgramRequest is put activity program request
 type PutActivityProgramRequest struct {
+	SeqNo              *int   `json:"seq_no, omitempty"`
 	Datetime           string `json:"datetime"`
 	StartTime          string `json:"start_time"`
 	EndTime            string `json:"end_time"`
@@ -56,6 +57,26 @@ func (r *PutActivityProgramResponce) GetResponce() {
 func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
 
+	var result *model.ActivityProgram
+	var err error
+	if req.SeqNo != nil {
+		result, err = update(con, req, ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		result, err = create(con, req, ctx)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &PutActivityProgramResponce{
+		ActivityProgram: result,
+	}, nil
+}
+
+func create(con repository.Connection, req *PutActivityProgramRequest, ctx *Context) (*model.ActivityProgram, error) {
 	maxSeq, err := con.FindActivityProgramMaxSeqNo(ctx.userID)
 	if err != nil {
 		return nil, err
@@ -86,8 +107,35 @@ func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl
 	if err != nil {
 		return nil, err
 	}
+	return result, nil
+}
 
-	return &PutActivityProgramResponce{
-		ActivityProgram: result,
-	}, nil
+func update(con repository.Connection, req *PutActivityProgramRequest, ctx *Context) (*model.ActivityProgram, error) {
+	var result *model.ActivityProgram
+	var err error
+	err = con.RunTransaction(func(tx repository.Transaction) error {
+		result, err = tx.UpdateActivityProgram(&model.ActivityProgram{
+			UserID:             ctx.userID,
+			SeqNo:              model.ActivityProgramSeqNo(*req.SeqNo),
+			Datetime:           req.Datetime,
+			StartTime:          req.StartTime,
+			EndTime:            req.EndTime,
+			PracticeSectionID:  req.PracticeSectionID,
+			PracticeContentsID: req.PracticeContentsID,
+			OutwardTrip:        req.OutwardTrip,
+			ReturnTrip:         req.ReturnTrip,
+			ContactPerson1:     req.ContactPerson1,
+			ContactAbstract1:   req.ContactAbstract1,
+			ContactPerson2:     req.ContactPerson2,
+			ContactAbstract2:   req.ContactAbstract2,
+		})
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
 }

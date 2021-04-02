@@ -221,3 +221,11 @@ func (t *dbMockTransaction) UpdateUser(u *model.User) error {
 
 	return nil
 }
+
+func (t *dbMockTransaction) UpdateActivityProgram(u *model.ActivityProgram) (*model.ActivityProgram, error) {
+	return nil, nil
+}
+
+func (t *dbMockTransaction) DeleteActivityProgram(uID model.UserID, seqNo model.ActivityProgramSeqNo) error {
+	return nil
+}
