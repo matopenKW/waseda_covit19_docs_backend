@@ -36,14 +36,6 @@ func TestGetActivityPrograms_Validate(t *testing.T) {
 	}
 }
 
-func TestGetActivityPrograms_Validate_Fail(t *testing.T) {
-	impl := &GetActivityProgramsRequest{}
-	err := impl.Validate()
-	if err == nil {
-		t.Fatalf("Validate not errord. target=%#v, err=%#v", impl, err)
-	}
-}
-
 func TestGetActivityPrograms_Execute(t *testing.T) {
 	want := &GetActivityProgramsResponce{
 		ActivityPrograms: &ResponceActivityPrograms{
@@ -257,33 +249,33 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 	}
 }
 
-func TestGetActivityPrograms_GetActivityPrograms(t *testing.T) {
-	testRouteUserID := model.UserID("test_user_id")
-	testRouteSeqNo := model.RouteSeqNo(1)
-	mock := repository.NewDBMock()
-	mock.SetRoutes([]*model.Route{
-		{
-			SeqNo:  testRouteSeqNo,
-			UserID: "test_user_id",
-			Name:   "test_route_name",
-		},
-	})
+// func TestGetActivityPrograms_GetActivityPrograms(t *testing.T) {
+// 	want
 
-	repo := repository.NewMockDbRepository(mock)
-	con, _ := repo.NewConnection()
-	implCtx := NewContext("test_user_id", con, nil)
+// 	testRouteUserID := model.UserID("test_user_id")
+// 	testRouteSeqNo := model.RouteSeqNo(1)
+// 	mock := repository.NewDBMock()
+// 	mock.SetActivityPrograms([]*model.ActivityProgram{
+// 		{
 
-	impl := &GetActivityProgramsRequest{}
-	_, err := impl.Execute(implCtx)
-	if err != nil {
-		t.Fatalf("Is error %#v", err)
-	}
+// 		},
+// 	})
 
-	got, err := con.FindRoute(testRouteUserID, testRouteSeqNo)
-	if err != nil {
-		t.Fatalf("Is error %#v", err)
-	}
-	if got != nil {
-		t.Errorf("Find Route is not nil. got=%#v", got)
-	}
-}
+// 	repo := repository.NewMockDbRepository(mock)
+// 	con, _ := repo.NewConnection()
+// 	implCtx := NewContext("test_user_id", con, nil)
+
+// 	impl := &GetActivityProgramsRequest{}
+// 	_, err := impl.Execute(implCtx)
+// 	if err != nil {
+// 		t.Fatalf("Is error %#v", err)
+// 	}
+
+// 	got, err := con.FindRoute(testRouteUserID, testRouteSeqNo)
+// 	if err != nil {
+// 		t.Fatalf("Is error %#v", err)
+// 	}
+// 	if got != nil {
+// 		t.Errorf("Find Route is not nil. got=%#v", got)
+// 	}
+// }
