@@ -1,6 +1,8 @@
 package impl
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
@@ -57,6 +59,9 @@ func (r *PutActivityProgramResponce) GetResponce() {
 
 func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl, error) {
 	con := ctx.GetConnection()
+
+	fmt.Println("req.ContactPerson1: ", req.ContactPerson1)
+	fmt.Println("req.ContactPerson2: ", req.ContactPerson2)
 
 	var result *model.ActivityProgram
 	var err error
