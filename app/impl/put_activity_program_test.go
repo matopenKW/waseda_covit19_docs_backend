@@ -25,6 +25,7 @@ func TestPutActivityProgramService_SetRequest(t *testing.T) {
 		ContactAbstract1:   "test_contact_abstract1",
 		ContactPerson2:     1,
 		ContactAbstract2:   "test_contact_abstract2",
+		PlaceID:            1,
 	}
 
 	bs := []byte(`{
@@ -38,7 +39,8 @@ func TestPutActivityProgramService_SetRequest(t *testing.T) {
 			"contact_person1": 1,
 			"contact_abstract1": "test_contact_abstract1",
 			"contact_person2": 1,
-			"contact_abstract2": "test_contact_abstract2"
+			"contact_abstract2": "test_contact_abstract2",
+			"place_id": 1
 		}`)
 	req, _ := http.NewRequest("GET", "/api/v1/put_activity_program", bytes.NewBuffer(bs))
 
@@ -71,6 +73,7 @@ func TestPutActivityProgramService_Execute(t *testing.T) {
 			ContactAbstract1:   "test_contact_abstract1",
 			ContactPerson2:     1,
 			ContactAbstract2:   "test_contact_abstract2",
+			PlaceID:            1,
 		},
 	}
 
@@ -92,6 +95,7 @@ func TestPutActivityProgramService_Execute(t *testing.T) {
 		ContactAbstract1:   "test_contact_abstract1",
 		ContactPerson2:     1,
 		ContactAbstract2:   "test_contact_abstract2",
+		PlaceID:            1,
 	}
 	got, err := impl.Execute(implCtx)
 	if err != nil {
@@ -126,6 +130,7 @@ func TestPutActivityProgramService_Create(t *testing.T) {
 			ContactAbstract1:   "test_contact_abstract1",
 			ContactPerson2:     1,
 			ContactAbstract2:   "test_contact_abstract2",
+			PlaceID:            1,
 		},
 	}
 
@@ -156,6 +161,7 @@ func TestPutActivityProgramService_Create(t *testing.T) {
 		ContactAbstract1:   "test_contact_abstract1",
 		ContactPerson2:     1,
 		ContactAbstract2:   "test_contact_abstract2",
+		PlaceID:            1,
 	}
 
 	_, err := impl.Execute(implCtx)

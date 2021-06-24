@@ -28,6 +28,7 @@ type PutActivityProgramRequest struct {
 	ContactAbstract1   string `json:"contact_abstract1"`
 	ContactPerson2     int    `json:"contact_person2"`
 	ContactAbstract2   string `json:"contact_abstract2"`
+	PlaceID            int    `json:"place_id"`
 }
 
 // SetRequest is request set receiver
@@ -98,6 +99,7 @@ func create(con repository.Connection, req *PutActivityProgramRequest, ctx *Cont
 			ContactAbstract1:   req.ContactAbstract1,
 			ContactPerson2:     req.ContactPerson2,
 			ContactAbstract2:   req.ContactAbstract2,
+			PlaceID:            req.PlaceID,
 		})
 		if err != nil {
 			return err
@@ -128,6 +130,7 @@ func update(con repository.Connection, req *PutActivityProgramRequest, ctx *Cont
 			ContactAbstract1:   req.ContactAbstract1,
 			ContactPerson2:     req.ContactPerson2,
 			ContactAbstract2:   req.ContactAbstract2,
+			PlaceID:            req.PlaceID,
 		})
 		if err != nil {
 			return err
