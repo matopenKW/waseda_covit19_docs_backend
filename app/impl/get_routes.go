@@ -29,6 +29,7 @@ func (r *GetRoutesRequest) Execute(ctx *Context) (ResponceImpl, error) {
 
 type GetRoutesResponce struct {
 	Routes []*model.Route
+	Places []*model.Place
 }
 
 func (r *GetRoutesResponce) GetResponce() {
@@ -44,5 +45,6 @@ func GetRoutes(req *GetRoutesRequest, ctx *Context) (ResponceImpl, error) {
 
 	return &GetRoutesResponce{
 		Routes: rs,
+		Places: ctx.master.places,
 	}, nil
 }
