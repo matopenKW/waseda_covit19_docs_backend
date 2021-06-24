@@ -11,12 +11,18 @@ import (
 	"firebase.google.com/go/auth"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/impl"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
+
+type handler struct {
+	db     *gorm.DB
+	master *impl.Master
+}
 
 var master *impl.Master
 
@@ -31,6 +37,7 @@ var serviceImpl struct {
 	createUser                impl.CreateUserService
 	getUser                   impl.GetUserService
 	deleteActivityProgram     impl.DeleteActivityProgramService
+	getActivityPrograms       impl.GetActivityProgramsService
 }
 
 func init() {
@@ -40,13 +47,38 @@ func init() {
 	if os.Getenv("FRONT_URL") == "" {
 		panic("init error. front url env is brank")
 	}
-
-	// set master data
-	master = setMasterData()
 }
 
 func main() {
 	r := gin.Default()
+
+	// dbConnection
+	db, err := repository.NewDbConnection()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	db.LogMode(true)
+	defer db.Close()
+
+	repo := repository.NewDbRepository(db)
+	con, err := repo.NewConnection()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// set master data
+	master, err = setMasterData(con)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	h := &handler{
+		db:     db,
+		master: master,
+	}
 
 	config := cors.DefaultConfig()
 	config.AllowOrigins = []string{os.Getenv("FRONT_URL")}
@@ -60,37 +92,29 @@ func main() {
 		"Authorization"}
 	r.Use(cors.New(config))
 
-	r.GET("/api/v1/get_activity_program/:seq_no", appHandler(&serviceImpl.getActivityProgramService))
-	r.PUT("/api/v1/put_activity_program", appHandler(&serviceImpl.putActivityProgramService))
-	r.GET("/api/v1/get_routes", appHandler(&serviceImpl.getRoutesService))
-	r.PUT("/api/v1/put_route", appHandler(&serviceImpl.putRouteService))
-	r.DELETE("/api/v1/delete_route", appHandler(&serviceImpl.deleteRouteService))
-	r.GET("/api/v1/get_histories", appHandler(&serviceImpl.getHistories))
-	r.PUT("/api/v1/update_user", appHandler(&serviceImpl.updateUsers))
-	r.GET("/api/v1/get_user", appHandler((&serviceImpl.getUser)))
-	r.DELETE("/api/v1/delete_activity_program", appHandler(&serviceImpl.deleteActivityProgram))
+	r.GET("/api/v1/get_activity_program/:seq_no", h.appHandler(&serviceImpl.getActivityProgramService))
+	r.PUT("/api/v1/put_activity_program", h.appHandler(&serviceImpl.putActivityProgramService))
+	r.GET("/api/v1/get_routes", h.appHandler(&serviceImpl.getRoutesService))
+	r.PUT("/api/v1/put_route", h.appHandler(&serviceImpl.putRouteService))
+	r.DELETE("/api/v1/delete_route", h.appHandler(&serviceImpl.deleteRouteService))
+	r.GET("/api/v1/get_histories", h.appHandler(&serviceImpl.getHistories))
+	r.PUT("/api/v1/update_user", h.appHandler(&serviceImpl.updateUsers))
+	r.GET("/api/v1/get_user", h.appHandler(&serviceImpl.getUser))
+	r.DELETE("/api/v1/delete_activity_program", h.appHandler(&serviceImpl.deleteActivityProgram))
+	r.GET("/api/v1/get_activity_programs", h.appHandler(&serviceImpl.getActivityPrograms))
 
 	if os.Getenv("NO_AUTH_FUNC_ON") == "1" {
-		r.POST("/api/v1/create_user", appNoAuthHandler((&serviceImpl.createUser)))
+		r.POST("/api/v1/create_user", h.appNoAuthHandler((&serviceImpl.createUser)))
 	}
 
 	r.Run()
 }
 
-func appHandler(s impl.ServiceImpl) func(*gin.Context) {
+func (h *handler) appHandler(s impl.ServiceImpl) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		req := s.New()
 
-		// dbConnection
-		db, err := repository.NewDbConnection()
-		if err != nil {
-			log.Println(err)
-			errorHandring("db connections error", ctx)
-			return
-		}
-		defer db.Close()
-
-		repo := repository.NewDbRepository(db)
+		repo := repository.NewDbRepository(h.db)
 		con, err := repo.NewConnection()
 		if err != nil {
 			log.Println(err)
@@ -101,7 +125,7 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 		var token *auth.Token
 		if os.Getenv("ENV") != "prd" {
 			token, err = authDev(ctx)
-			db.LogMode(true)
+			h.db.LogMode(true)
 		} else {
 			token, err = authJWT(ctx)
 		}
@@ -131,20 +155,11 @@ func appHandler(s impl.ServiceImpl) func(*gin.Context) {
 	}
 }
 
-func appNoAuthHandler(s impl.ServiceImpl) func(*gin.Context) {
+func (h *handler) appNoAuthHandler(s impl.ServiceImpl) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		req := s.New()
 
-		// dbConnection
-		db, err := repository.NewDbConnection()
-		if err != nil {
-			log.Println(err)
-			errorHandring("db connections error", ctx)
-			return
-		}
-		defer db.Close()
-
-		repo := repository.NewDbRepository(db)
+		repo := repository.NewDbRepository(h.db)
 		con, err := repo.NewConnection()
 		if err != nil {
 			log.Println(err)
@@ -203,7 +218,7 @@ func authDev(ctx *gin.Context) (*auth.Token, error) {
 	}, nil
 }
 
-func setMasterData() *impl.Master {
+func setMasterData(con repository.Connection) (*impl.Master, error) {
 	practices := []*model.Practice{
 		{ID: 1, Name: "レギュラー"},
 		{ID: 2, Name: "卒演"},
@@ -222,5 +237,9 @@ func setMasterData() *impl.Master {
 		{ID: 9, Name: "アンサンブル"},
 	}
 
-	return impl.NewMaster(practices, activities)
+	prices, err := con.ListPlace()
+	if err != nil {
+		return nil, err
+	}
+	return impl.NewMaster(practices, activities, prices), nil
 }

@@ -13,6 +13,7 @@ type dbMock struct {
 	routes           []*model.Route
 	lastUploads      []*model.LastUpload
 	users            []*model.User
+	places           []*model.Place
 }
 
 func NewDBMock() *dbMock {
@@ -29,6 +30,10 @@ func (m *dbMock) SetRoutes(rs []*model.Route) {
 
 func (m *dbMock) SetUsers(us []*model.User) {
 	m.users = us
+}
+
+func (m *dbMock) SetPlaces(s []*model.Place) {
+	m.places = s
 }
 
 type dbMockRepository struct {
@@ -82,7 +87,7 @@ func (c *dbMockConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (mod
 	return seq, nil
 }
 
-func (c *dbMockConnection) ListActivityPrograms() ([]*model.ActivityProgram, error) {
+func (c *dbMockConnection) ListActivityPrograms(f ActivityProgramFilter) ([]*model.ActivityProgram, error) {
 	return mock.activityPrograms, nil
 }
 
@@ -128,6 +133,10 @@ func (c *dbMockConnection) LatestLastUpload() (*model.LastUpload, error) {
 
 func (c *dbMockConnection) ListUser() ([]*model.User, error) {
 	return mock.users, nil
+}
+
+func (c *dbMockConnection) ListPlace() ([]*model.Place, error) {
+	return mock.places, nil
 }
 
 func (t *dbMockTransaction) CreateActivityProgram(ap *model.ActivityProgram) (*model.ActivityProgram, error) {

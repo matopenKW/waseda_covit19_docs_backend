@@ -115,7 +115,7 @@ func createHistoryFile(con repository.Connection) ([]byte, error) {
 	csv += strings.Join(header, ",")
 	csv += "\n"
 
-	aps, err := con.ListActivityPrograms()
+	aps, err := con.ListActivityPrograms(repository.ActivityProgramFilter{})
 	if err != nil {
 		return nil, err
 	}

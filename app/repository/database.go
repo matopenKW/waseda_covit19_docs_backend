@@ -90,9 +90,14 @@ func (c *dbConnection) FindActivityProgramMaxSeqNo(userID model.UserID) (model.A
 	return ap.SeqNo, nil
 }
 
-func (c *dbConnection) ListActivityPrograms() ([]*model.ActivityProgram, error) {
+func (c *dbConnection) ListActivityPrograms(f ActivityProgramFilter) ([]*model.ActivityProgram, error) {
 	var aps []*model.ActivityProgram
-	err := c.db.Find(&aps).Error
+	db := c.db
+	switch f.OrderBy {
+	case ActivityProgramOrderByDatetimeAsc:
+		db = db.Order("data_time ASC")
+	}
+	err := db.Find(&aps).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, err
 	}
@@ -157,6 +162,15 @@ func (c *dbConnection) ListUser() ([]*model.User, error) {
 		return nil, err
 	}
 	return us, nil
+}
+
+func (c *dbConnection) ListPlace() ([]*model.Place, error) {
+	ss := []*model.Place{}
+	err := c.db.Find(&ss).Error
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return ss, nil
 }
 
 func (t *dbTransaction) CreateActivityProgram(p *model.ActivityProgram) (*model.ActivityProgram, error) {
