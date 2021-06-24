@@ -16,4 +16,5 @@ type ActivityProgram struct {
 	ContactAbstract1   string
 	ContactPerson2     int
 	ContactAbstract2   string
+	PlaceID            int
 }
