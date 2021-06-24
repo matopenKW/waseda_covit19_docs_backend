@@ -11,6 +11,7 @@ require (
 	github.com/google/go-cmp v0.5.4
 	github.com/jinzhu/gorm v1.9.16
 	github.com/lib/pq v1.9.0
+	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
 	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
 	google.golang.org/api v0.40.0
 )
