@@ -59,8 +59,7 @@ func TestPutActivityProgramService_SetRequest(t *testing.T) {
 
 func TestPutActivityProgramService_Execute(t *testing.T) {
 	want := &PutActivityProgramResponce{
-		ActivityProgram: &model.ActivityProgram{
-			UserID:             "test_user_id",
+		ActivityProgram: &ResponceActivityProgram{
 			SeqNo:              1,
 			Datetime:           "20200101",
 			StartTime:          "0900",
