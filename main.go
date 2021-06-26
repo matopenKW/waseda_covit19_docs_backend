@@ -101,7 +101,7 @@ func main() {
 	r.PUT("/api/v1/update_user", h.appHandler(&serviceImpl.updateUsers))
 	r.GET("/api/v1/get_user", h.appHandler(&serviceImpl.getUser))
 	r.DELETE("/api/v1/delete_activity_program", h.appHandler(&serviceImpl.deleteActivityProgram))
-	r.GET("/api/v1/get_activity_programs", h.appHandler(&serviceImpl.getActivityPrograms))
+	r.GET("/api/v1/get_activity_programs/:datetime", h.appHandler(&serviceImpl.getActivityPrograms))
 
 	if os.Getenv("NO_AUTH_FUNC_ON") == "1" {
 		r.POST("/api/v1/create_user", h.appNoAuthHandler((&serviceImpl.createUser)))
