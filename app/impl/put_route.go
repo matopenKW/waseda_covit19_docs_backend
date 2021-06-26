@@ -44,7 +44,7 @@ func (r *PutRouteRequest) Execute(ctx *Context) (ResponceImpl, error) {
 
 // PutRouteResponce is put route responce
 type PutRouteResponce struct {
-	Route *model.Route
+	Route *ResponceRoute
 }
 
 // GetResponce is responce get receiver
@@ -88,7 +88,7 @@ func putRoute(req *PutRouteRequest, ctx *Context) (ResponceImpl, error) {
 	}
 
 	return &PutRouteResponce{
-		Route: route,
+		Route: PresenterRoute(route),
 	}, nil
 }
 

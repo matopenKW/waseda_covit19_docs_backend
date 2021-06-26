@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
-	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 // GetHistoriesService is get histories service
@@ -35,7 +34,7 @@ func (r *GetHistoriesRequest) Execute(ctx *Context) (ResponceImpl, error) {
 
 type History struct {
 	Month            string
-	ActivityPrograms []*model.ActivityProgram
+	ActivityPrograms []*ResponceActivityProgram
 }
 
 // GetHistoriesResponce is put histories responce
@@ -55,10 +54,10 @@ func getHistories(req *GetHistoriesRequest, ctx *Context) (ResponceImpl, error) 
 		return nil, err
 	}
 
-	hm := make(map[string][]*model.ActivityProgram)
+	hm := make(map[string][]*ResponceActivityProgram)
 	for _, v := range aps {
 		month := v.Datetime[4:6]
-		hm[month] = append(hm[month], v)
+		hm[month] = append(hm[month], PresenterActivityProgram(v))
 	}
 
 	hs := make([]*History, 0)
