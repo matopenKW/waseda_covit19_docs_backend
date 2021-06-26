@@ -3,6 +3,7 @@ package impl
 import (
 	"github.com/gin-gonic/gin"
 
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/repository"
 )
 
@@ -30,12 +31,13 @@ func (r *GetActivityProgramsRequest) Execute(ctx *Context) (ResponceImpl, error)
 	return GetActivityPrograms(r, ctx)
 }
 
-type ResponceActivityPrograms struct {
-	ActivityProgramMap map[string][]*ResponceActivityProgram
+type HistoryForEachUser struct {
+	ActivityProgram *ResponceActivityProgram
+	User            *ResponceUser
 }
 
 type GetActivityProgramsResponce struct {
-	ActivityPrograms *ResponceActivityPrograms
+	ActivityPrograms map[string][]*HistoryForEachUser
 }
 
 func (r *GetActivityProgramsResponce) GetResponce() {
@@ -51,17 +53,34 @@ func GetActivityPrograms(req *GetActivityProgramsRequest, ctx *Context) (Responc
 		return nil, err
 	}
 
-	result := make(map[string][]*ResponceActivityProgram)
+	us, err := con.ListUser()
+	if err != nil {
+		return nil, err
+	}
+
+	uMap := make(map[model.UserID]*model.User)
+	for _, u := range us {
+		uMap[u.ID] = u
+	}
+
+	result := make(map[string][]*HistoryForEachUser)
 	for _, ap := range aps {
 		if _, exsits := result[ap.Datetime]; !exsits {
-			result[ap.Datetime] = make([]*ResponceActivityProgram, 0)
+			result[ap.Datetime] = make([]*HistoryForEachUser, 0)
 		}
-		result[ap.Datetime] = append(result[ap.Datetime], PresenterActivityProgram(ap))
+
+		hfeu := &HistoryForEachUser{
+			ActivityProgram: PresenterActivityProgram(ap),
+		}
+
+		if u, ok := uMap[ap.UserID]; ok {
+			hfeu.User = PresenterUser(u)
+
+		}
+		result[ap.Datetime] = append(result[ap.Datetime], hfeu)
 	}
 
 	return &GetActivityProgramsResponce{
-		ActivityPrograms: &ResponceActivityPrograms{
-			ActivityProgramMap: result,
-		},
+		ActivityPrograms: result,
 	}, nil
 }

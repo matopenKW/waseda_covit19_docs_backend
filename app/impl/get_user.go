@@ -2,6 +2,7 @@ package impl
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
 
 // GetUserService is get user service
@@ -58,15 +59,19 @@ func GetUser(req *GetUserRequest, ctx *Context) (ResponceImpl, error) {
 	}
 
 	return &GetUserResponce{
-		User: &ResponceUser{
-			Name:           u.Name,
-			UniversityName: u.UniversityName,
-			FacultyName:    u.FacultyName,
-			StudentNo:      u.StudentNo,
-			CellPhonNo:     u.CellPhonNo,
-			Ki:             u.Ki,
-			PartID:         u.PartID,
-			IsAdmin:        u.IsAdmin,
-		},
+		User: PresenterUser(u),
 	}, nil
+}
+
+func PresenterUser(u *model.User) *ResponceUser {
+	return &ResponceUser{
+		Name:           u.Name,
+		UniversityName: u.UniversityName,
+		FacultyName:    u.FacultyName,
+		StudentNo:      u.StudentNo,
+		CellPhonNo:     u.CellPhonNo,
+		Ki:             u.Ki,
+		PartID:         u.PartID,
+		IsAdmin:        u.IsAdmin,
+	}
 }

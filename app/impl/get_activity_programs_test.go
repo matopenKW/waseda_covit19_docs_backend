@@ -38,10 +38,10 @@ func TestGetActivityPrograms_Validate(t *testing.T) {
 
 func TestGetActivityPrograms_Execute(t *testing.T) {
 	want := &GetActivityProgramsResponce{
-		ActivityPrograms: &ResponceActivityPrograms{
-			ActivityProgramMap: map[string][]*ResponceActivityProgram{
-				"20200101": {
-					{
+		ActivityPrograms: map[string][]*HistoryForEachUser{
+			"20200101": {
+				{
+					ActivityProgram: &ResponceActivityProgram{
 						SeqNo:              1,
 						Datetime:           "20200101",
 						StartTime:          "test_start_time",
@@ -55,37 +55,46 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactPerson2:     1,
 						ContactAbstract2:   "contact_abstract_2",
 					},
-					{
-						SeqNo:              1,
-						Datetime:           "20200101",
-						StartTime:          "test_start_time",
-						EndTime:            "end_start_time",
-						PracticeSectionID:  1,
-						PracticeContentsID: 1,
-						OutwardTrip:        "outward_trip",
-						ReturnTrip:         "return_trip",
-						ContactPerson1:     1,
-						ContactAbstract1:   "contact_abstract_1",
-						ContactPerson2:     1,
-						ContactAbstract2:   "contact_abstract_2",
-					},
-					{
-						SeqNo:              1,
-						Datetime:           "20200101",
-						StartTime:          "test_start_time",
-						EndTime:            "end_start_time",
-						PracticeSectionID:  1,
-						PracticeContentsID: 1,
-						OutwardTrip:        "outward_trip",
-						ReturnTrip:         "return_trip",
-						ContactPerson1:     1,
-						ContactAbstract1:   "contact_abstract_1",
-						ContactPerson2:     1,
-						ContactAbstract2:   "contact_abstract_2",
-					},
+					User: &ResponceUser{Name: "test_user_name_1"},
 				},
-				"20200102": {
-					{
+				{
+					ActivityProgram: &ResponceActivityProgram{
+						SeqNo:              1,
+						Datetime:           "20200101",
+						StartTime:          "test_start_time",
+						EndTime:            "end_start_time",
+						PracticeSectionID:  1,
+						PracticeContentsID: 1,
+						OutwardTrip:        "outward_trip",
+						ReturnTrip:         "return_trip",
+						ContactPerson1:     1,
+						ContactAbstract1:   "contact_abstract_1",
+						ContactPerson2:     1,
+						ContactAbstract2:   "contact_abstract_2",
+					},
+					User: &ResponceUser{Name: "test_user_name_2"},
+				},
+				{
+					ActivityProgram: &ResponceActivityProgram{
+						SeqNo:              1,
+						Datetime:           "20200101",
+						StartTime:          "test_start_time",
+						EndTime:            "end_start_time",
+						PracticeSectionID:  1,
+						PracticeContentsID: 1,
+						OutwardTrip:        "outward_trip",
+						ReturnTrip:         "return_trip",
+						ContactPerson1:     1,
+						ContactAbstract1:   "contact_abstract_1",
+						ContactPerson2:     1,
+						ContactAbstract2:   "contact_abstract_2",
+					},
+					User: &ResponceUser{Name: "test_user_name_3"},
+				},
+			},
+			"20200102": {
+				{
+					ActivityProgram: &ResponceActivityProgram{
 						SeqNo:              1,
 						Datetime:           "20200102",
 						StartTime:          "test_start_time",
@@ -99,7 +108,10 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactPerson2:     1,
 						ContactAbstract2:   "contact_abstract_2",
 					},
-					{
+					User: &ResponceUser{Name: "test_user_name_1"},
+				},
+				{
+					ActivityProgram: &ResponceActivityProgram{
 						SeqNo:              1,
 						Datetime:           "20200102",
 						StartTime:          "test_start_time",
@@ -113,9 +125,12 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactPerson2:     1,
 						ContactAbstract2:   "contact_abstract_2",
 					},
+					User: &ResponceUser{Name: "test_user_name_2"},
 				},
-				"20200103": {
-					{
+			},
+			"20200103": {
+				{
+					ActivityProgram: &ResponceActivityProgram{
 						SeqNo:              1,
 						Datetime:           "20200103",
 						StartTime:          "test_start_time",
@@ -129,12 +144,18 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactPerson2:     1,
 						ContactAbstract2:   "contact_abstract_2",
 					},
+					User: &ResponceUser{Name: "test_user_name_1"},
 				},
 			},
 		},
 	}
 
 	mock := repository.NewDBMock()
+	mock.SetUsers([]*model.User{
+		{ID: "test_user_id_1", Name: "test_user_name_1"},
+		{ID: "test_user_id_2", Name: "test_user_name_2"},
+		{ID: "test_user_id_3", Name: "test_user_name_3"},
+	})
 	mock.SetActivityPrograms([]*model.ActivityProgram{
 		{
 			UserID:             "test_user_id_1",
