@@ -95,7 +95,7 @@ func (c *dbConnection) ListActivityPrograms(f ActivityProgramFilter) ([]*model.A
 	db := c.db
 	switch f.OrderBy {
 	case ActivityProgramOrderByDatetimeAsc:
-		db = db.Order("data_time ASC")
+		db = db.Order("datetime ASC")
 	}
 	err := db.Find(&aps).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -136,7 +136,7 @@ func (c *dbConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Route, 
 }
 
 func (c *dbConnection) ListActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
-	db := c.db.Where("user_id = ?", userID)
+	db := c.db.Order("datetime ASC").Where("user_id = ?", userID)
 
 	var ps []*model.ActivityProgram
 	err := db.Find(&ps).Error

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
 )
@@ -121,6 +122,9 @@ func (c *dbMockConnection) ListActivityProgramsByUserID(userID model.UserID) ([]
 			aps = append(aps, v)
 		}
 	}
+	sort.Slice(aps, func(i, j int) bool {
+		return aps[i].Datetime < aps[j].Datetime
+	})
 	return aps, nil
 }
 
