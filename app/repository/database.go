@@ -95,7 +95,7 @@ func (c *dbConnection) ListActivityPrograms(f ActivityProgramFilter) ([]*model.A
 	db := c.db
 	switch f.OrderBy {
 	case ActivityProgramOrderByDatetimeAsc:
-		db = db.Order("data_time ASC")
+		db = db.Order("datetime ASC")
 	}
 	err := db.Find(&aps).Error
 	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
