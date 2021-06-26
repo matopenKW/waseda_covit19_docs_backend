@@ -136,7 +136,7 @@ func (c *dbConnection) FindRoutesByUserID(userID model.UserID) ([]*model.Route, 
 }
 
 func (c *dbConnection) ListActivityProgramsByUserID(userID model.UserID) ([]*model.ActivityProgram, error) {
-	db := c.db.Where("user_id = ?", userID)
+	db := c.db.Order("datetime ASC").Where("user_id = ?", userID)
 
 	var ps []*model.ActivityProgram
 	err := db.Find(&ps).Error
