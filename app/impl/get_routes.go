@@ -27,8 +27,15 @@ func (r *GetRoutesRequest) Execute(ctx *Context) (ResponceImpl, error) {
 	return GetRoutes(r, ctx)
 }
 
+type ResponceRoute struct {
+	SeqNo       int
+	Name        string
+	OutwardTrip string
+	ReturnTrip  string
+}
+
 type GetRoutesResponce struct {
-	Routes []*model.Route
+	Routes []*ResponceRoute
 	Places []*model.Place
 }
 
@@ -43,8 +50,21 @@ func GetRoutes(req *GetRoutesRequest, ctx *Context) (ResponceImpl, error) {
 		return nil, err
 	}
 
+	routes := make([]*ResponceRoute, 0)
+	for _, r := range rs {
+		routes = append(routes, PresenterRoute(r))
+	}
 	return &GetRoutesResponce{
-		Routes: rs,
+		Routes: routes,
 		Places: ctx.master.places,
 	}, nil
+}
+
+func PresenterRoute(r *model.Route) *ResponceRoute {
+	return &ResponceRoute{
+		SeqNo:       int(r.SeqNo),
+		Name:        r.Name,
+		OutwardTrip: r.OutwardTrip,
+		ReturnTrip:  r.ReturnTrip,
+	}
 }

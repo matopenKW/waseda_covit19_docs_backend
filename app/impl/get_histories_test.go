@@ -14,19 +14,16 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 		Histories: []*History{
 			{
 				Month: "10",
-				ActivityPrograms: []*model.ActivityProgram{
+				ActivityPrograms: []*ResponceActivityProgram{
 					{
-						UserID:   "test_user_id",
 						SeqNo:    1,
 						Datetime: "20201001",
 					},
 					{
-						UserID:   "test_user_id",
 						SeqNo:    2,
 						Datetime: "20201002",
 					},
 					{
-						UserID:   "test_user_id",
 						SeqNo:    3,
 						Datetime: "20201003",
 					},
@@ -34,9 +31,8 @@ func TestGetHistoriesService_Execute(t *testing.T) {
 			},
 			{
 				Month: "11",
-				ActivityPrograms: []*model.ActivityProgram{
+				ActivityPrograms: []*ResponceActivityProgram{
 					{
-						UserID:   "test_user_id",
 						SeqNo:    4,
 						Datetime: "20201101",
 					},

@@ -59,8 +59,7 @@ func TestPutRoute_Validate_Fail(t *testing.T) {
 
 func TestPutRoute_Execute(t *testing.T) {
 	want := &PutRouteResponce{
-		Route: &model.Route{
-			UserID:      "test_user_id",
+		Route: &ResponceRoute{
 			SeqNo:       1,
 			Name:        "test_route_name",
 			OutwardTrip: "test_outward_trip",

@@ -39,10 +39,9 @@ func TestGetActivityPrograms_Validate(t *testing.T) {
 func TestGetActivityPrograms_Execute(t *testing.T) {
 	want := &GetActivityProgramsResponce{
 		ActivityPrograms: &ResponceActivityPrograms{
-			ActivityProgramMap: map[string][]*model.ActivityProgram{
+			ActivityProgramMap: map[string][]*ResponceActivityProgram{
 				"20200101": {
 					{
-						UserID:             "test_user_id_1",
 						SeqNo:              1,
 						Datetime:           "20200101",
 						StartTime:          "test_start_time",
@@ -57,7 +56,6 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactAbstract2:   "contact_abstract_2",
 					},
 					{
-						UserID:             "test_user_id_2",
 						SeqNo:              1,
 						Datetime:           "20200101",
 						StartTime:          "test_start_time",
@@ -72,7 +70,6 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactAbstract2:   "contact_abstract_2",
 					},
 					{
-						UserID:             "test_user_id_3",
 						SeqNo:              1,
 						Datetime:           "20200101",
 						StartTime:          "test_start_time",
@@ -89,7 +86,6 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 				},
 				"20200102": {
 					{
-						UserID:             "test_user_id_1",
 						SeqNo:              1,
 						Datetime:           "20200102",
 						StartTime:          "test_start_time",
@@ -104,7 +100,6 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 						ContactAbstract2:   "contact_abstract_2",
 					},
 					{
-						UserID:             "test_user_id_2",
 						SeqNo:              1,
 						Datetime:           "20200102",
 						StartTime:          "test_start_time",
@@ -121,7 +116,6 @@ func TestGetActivityPrograms_Execute(t *testing.T) {
 				},
 				"20200103": {
 					{
-						UserID:             "test_user_id_1",
 						SeqNo:              1,
 						Datetime:           "20200103",
 						StartTime:          "test_start_time",

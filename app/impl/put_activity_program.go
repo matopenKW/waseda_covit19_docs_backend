@@ -48,7 +48,7 @@ func (r *PutActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) 
 
 // PutActivityProgramResponce is put activity program responce
 type PutActivityProgramResponce struct {
-	ActivityProgram *model.ActivityProgram
+	ActivityProgram *ResponceActivityProgram
 }
 
 // GetResponce is responce get receiver
@@ -73,7 +73,7 @@ func activityProgram(req *PutActivityProgramRequest, ctx *Context) (ResponceImpl
 	}
 
 	return &PutActivityProgramResponce{
-		ActivityProgram: result,
+		ActivityProgram: PresenterActivityProgram(result),
 	}, nil
 }
 

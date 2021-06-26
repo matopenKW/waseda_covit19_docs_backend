@@ -40,9 +40,25 @@ func (r *GetActivityProgramRequest) Execute(ctx *Context) (ResponceImpl, error) 
 	return getActivityProgram(r, ctx)
 }
 
+type ResponceActivityProgram struct {
+	SeqNo              model.ActivityProgramSeqNo
+	Datetime           string
+	StartTime          string
+	EndTime            string
+	PracticeSectionID  uint
+	PracticeContentsID uint
+	OutwardTrip        string
+	ReturnTrip         string
+	ContactPerson1     int
+	ContactAbstract1   string
+	ContactPerson2     int
+	ContactAbstract2   string
+	PlaceID            int
+}
+
 // GetActivityProgramResponce is responce
 type GetActivityProgramResponce struct {
-	ActivityProgram *model.ActivityProgram
+	ActivityProgram *ResponceActivityProgram
 	PracticeName    string
 	ActivityName    string
 }
@@ -79,8 +95,26 @@ func getActivityProgram(req *GetActivityProgramRequest, ctx *Context) (ResponceI
 		}
 	}
 	return &GetActivityProgramResponce{
-		ActivityProgram: ap,
+		ActivityProgram: PresenterActivityProgram(ap),
 		PracticeName:    practiceName,
 		ActivityName:    activityName,
 	}, nil
+}
+
+func PresenterActivityProgram(ap *model.ActivityProgram) *ResponceActivityProgram {
+	return &ResponceActivityProgram{
+		SeqNo:              ap.SeqNo,
+		Datetime:           ap.Datetime,
+		StartTime:          ap.StartTime,
+		EndTime:            ap.EndTime,
+		PracticeSectionID:  ap.PracticeSectionID,
+		PracticeContentsID: ap.PracticeContentsID,
+		OutwardTrip:        ap.OutwardTrip,
+		ReturnTrip:         ap.ReturnTrip,
+		ContactPerson1:     ap.ContactPerson1,
+		ContactAbstract1:   ap.ContactAbstract1,
+		ContactPerson2:     ap.ContactPerson2,
+		ContactAbstract2:   ap.ContactAbstract2,
+		PlaceID:            ap.PlaceID,
+	}
 }
