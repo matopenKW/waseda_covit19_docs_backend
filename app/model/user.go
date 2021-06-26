@@ -12,4 +12,5 @@ type User struct {
 	CellPhonNo     string
 	Ki             int
 	PartID         int
+	IsAdmin        bool
 }

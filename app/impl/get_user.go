@@ -34,6 +34,7 @@ type ResponceUser struct {
 	CellPhonNo     string
 	Ki             int
 	PartID         int
+	IsAdmin        bool
 }
 
 type GetUserResponce struct {
@@ -65,6 +66,7 @@ func GetUser(req *GetUserRequest, ctx *Context) (ResponceImpl, error) {
 			CellPhonNo:     u.CellPhonNo,
 			Ki:             u.Ki,
 			PartID:         u.PartID,
+			IsAdmin:        u.IsAdmin,
 		},
 	}, nil
 }
