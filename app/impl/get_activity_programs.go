@@ -1,6 +1,8 @@
 package impl
 
 import (
+	"fmt"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/matopenKW/waseda_covit19_docs_backend/app/model"
@@ -63,8 +65,13 @@ func GetActivityPrograms(req *GetActivityProgramsRequest, ctx *Context) (Responc
 		uMap[u.ID] = u
 	}
 
+	duplicate := make(map[string]int)
 	result := make(map[string][]*HistoryForEachUser)
 	for _, ap := range aps {
+		if _, ok := duplicate[fmt.Sprintf("%s-%s", ap.UserID, ap.Datetime)]; ok {
+			continue
+		}
+
 		if _, exsits := result[ap.Datetime]; !exsits {
 			result[ap.Datetime] = make([]*HistoryForEachUser, 0)
 		}
@@ -75,9 +82,9 @@ func GetActivityPrograms(req *GetActivityProgramsRequest, ctx *Context) (Responc
 
 		if u, ok := uMap[ap.UserID]; ok {
 			hfeu.User = PresenterUser(u)
-
 		}
 		result[ap.Datetime] = append(result[ap.Datetime], hfeu)
+		duplicate[fmt.Sprintf("%s-%s", ap.UserID, ap.Datetime)] = 0
 	}
 
 	return &GetActivityProgramsResponce{
