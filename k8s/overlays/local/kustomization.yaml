@@ -1,0 +1,8 @@
+bases:
+  - ../../base
+
+patches:
+  - pod.yaml
+
+# resources:
+#   - nodeport.yaml

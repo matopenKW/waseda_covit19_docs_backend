@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: waseda-covit19-docs-app
+  labels:
+    name: waseda-covit19-docs-app
+spec:
+  containers:
+  - name: waseda-covit19-docs-app
+    image: waseda-covit19-docs-app
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 8080

@@ -1,0 +1,12 @@
+apiVersion: skaffold/v2beta12
+kind: Config
+metadata:
+  name: testserver
+build:
+  artifacts:
+  - image: waseda-covit19-docs-app
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kustomize:
+    paths: ["./k8s/overlays/local"]
