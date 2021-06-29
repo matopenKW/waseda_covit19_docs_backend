@@ -1,7 +1,5 @@
 resources:
-  - storage-class.yaml
-  - secret.yaml
-  - pv.yaml
-  - pvc.yaml
+  # - pvc.yaml
   - service.yaml
-  - db.yaml
+  - db-postgres.yaml
+  - db-expose.yaml

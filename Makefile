@@ -61,3 +61,9 @@ cmd-run:
 	# docker run -v $(pwd):/go/src --env-file .env --rm -it --name local_cmd local_cmd
 	docker-compose -f ./docker-compose.cmd.yaml up -d
 	docker exec -it local_cmd /bin/bash
+
+db-run-k8s:
+	kubectl config use-context docker-desktop
+	kubectl delete -k ./k8s/overlays/local/db/ --ignore-not-found=true
+	kubectl apply -f ./k8s/overlays/local/db/pvc.yaml
+	kubectl apply -k ./k8s/overlays/local/db/

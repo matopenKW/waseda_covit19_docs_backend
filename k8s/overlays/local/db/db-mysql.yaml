@@ -1,34 +1,37 @@
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: db
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: db
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: mysql
+        app: db
     spec:
       containers:
       - image: mysql:5.6
         name: mysql
         env:
         - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mysql-secret
-              key: password
+          value: password
+        - name: MYSQL_DATABASE
+          value: test
+        - name: MYSQL_ROOT_HOST
+          value: '%'
         ports:
         - containerPort: 3306
-          name: mysql
+          name: db
         volumeMounts:
-        - name: mysql-persistent-storage
+        - name: db-persistent-storage
           mountPath: /var/lib/mysql
+        args:
+        - --character-set-server=utf8mb4
       volumes:
-      - name: mysql-persistent-storage
+      - name: db-persistent-storage
         persistentVolumeClaim:
-          claimName: mysql-pv-claim
+          claimName: db-pv-claim

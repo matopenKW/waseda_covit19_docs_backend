@@ -1,7 +1,7 @@
 apiVersion: skaffold/v2beta12
 kind: Config
 metadata:
-  name: testserver
+  name: app
 build:
   artifacts:
   - image: waseda-covit19-docs-app
