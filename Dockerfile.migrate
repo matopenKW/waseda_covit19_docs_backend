@@ -1,0 +1,8 @@
+FROM golang:1.14.15
+
+RUN go get -u github.com/pressly/goose/cmd/goose
+
+WORKDIR /go/src
+
+COPY ./migrate  ./
+

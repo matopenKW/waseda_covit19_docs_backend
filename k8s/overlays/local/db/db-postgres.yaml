@@ -22,7 +22,7 @@ spec:
         - name: POSTGRES_PASSWORD
           value: password
         - name: POSTGRES_DB
-          value: test
+          value: postgres
         - name: POSTGRES_INITDB_ARGS
           value: '--encoding=UTF-8 --locale=C'
         ports:

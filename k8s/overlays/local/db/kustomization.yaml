@@ -1,5 +1,4 @@
 resources:
-  # - pvc.yaml
   - service.yaml
   - db-postgres.yaml
   - db-expose.yaml

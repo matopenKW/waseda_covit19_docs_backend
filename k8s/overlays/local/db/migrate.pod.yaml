@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: migrate
+  labels:
+    name: migrate
+spec:
+  containers:
+  - name: migrate
+    image: migrate
+    env:
+    - name: GOOSE_DRIVER
+      value: 'redshift'
+    - name: GOOSE_DBSTRING
+      value: 'postgres://root:password@tcp(db):5432/postgres'
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    tty: true
